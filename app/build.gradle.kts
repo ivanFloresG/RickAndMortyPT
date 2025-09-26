@@ -9,6 +9,8 @@ plugins {
 android {
     namespace = "com.aion.rickandmortypt"
     compileSdk = 36
+    val apiUrlTest = "https://rickandmortyapi.com"
+    val apiUrlProd = "https://rickandmortyapi.com"
 
     defaultConfig {
         applicationId = "com.aion.rickandmortypt"
@@ -21,7 +23,18 @@ android {
     }
 
     buildTypes {
+        debug {
+            applicationIdSuffix = ".test"
+            versionNameSuffix = ".test"
+            buildConfigField("String", "API_URL", "\"${apiUrlTest}\"")
+
+            isMinifyEnabled = false
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+        }
         release {
+            applicationIdSuffix = ".prod"
+            buildConfigField("String", "API_URL", "\"${apiUrlTest}\"")
+
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
