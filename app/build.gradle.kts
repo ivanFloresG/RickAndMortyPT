@@ -9,8 +9,8 @@ plugins {
 android {
     namespace = "com.aion.rickandmortypt"
     compileSdk = 36
-    val apiUrlTest = "https://rickandmortyapi.com/api"
-    val apiUrlProd = "https://rickandmortyapi.com/api"
+    val apiUrlTest = "https://rickandmortyapi.com"
+    val apiUrlProd = "https://rickandmortyapi.com"
 
     defaultConfig {
         applicationId = "com.aion.rickandmortypt"
@@ -26,7 +26,6 @@ android {
         debug {
             applicationIdSuffix = ".test"
             versionNameSuffix = ".test"
-            manifestPlaceholders["applicationLabel"] = "HRM [Test]"
             buildConfigField("String", "API_URL", "\"${apiUrlTest}\"")
 
             isMinifyEnabled = false
@@ -34,7 +33,6 @@ android {
         }
         release {
             applicationIdSuffix = ".prod"
-            manifestPlaceholders["applicationLabel"] = "HRM [Test]"
             buildConfigField("String", "API_URL", "\"${apiUrlTest}\"")
 
             isMinifyEnabled = false
