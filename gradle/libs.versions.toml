@@ -14,7 +14,10 @@ converterGson = "3.0.0"
 loggingInterceptor = "5.1.0"
 okhttp = "5.1.0"
 gson = "2.13.2"
-
+runtimeLivedata = "1.9.2"
+navigationCompose = "2.9.5"
+kotlinxSerializationJson = "1.9.0"
+coreSplashscreen = "1.0.1"
 
 dagger = "2.57.2"
 hiltAndroid = "2.57.2"
@@ -44,6 +47,10 @@ gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 google-dagger-compiler = { module = "com.google.dagger:dagger-compiler", version.ref = "dagger" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "dagger" }
+androidx-runtime-livedata = { module = "androidx.compose.runtime:runtime-livedata", version.ref = "runtimeLivedata" }
+androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
