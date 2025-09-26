@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.serialization)
     id("kotlin-kapt")
     alias(libs.plugins.dagger.hilt.android)
 }
@@ -33,7 +34,7 @@ android {
         }
         release {
             applicationIdSuffix = ".prod"
-            buildConfigField("String", "API_URL", "\"${apiUrlTest}\"")
+            buildConfigField("String", "API_URL", "\"${apiUrlProd}\"")
 
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
