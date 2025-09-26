@@ -1,7 +1,11 @@
+import org.gradle.kotlin.dsl.invoke
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("kotlin-kapt")
+    alias(libs.plugins.dagger.hilt.android)
 }
 
 android {
@@ -29,10 +33,11 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -59,4 +64,12 @@ dependencies {
     implementation (libs.converter.gson)
     implementation (libs.logging.interceptor)
     implementation (libs.okhttp)
-    implementation (libs.gson)}
+    implementation (libs.gson)
+
+    //Dependency Injection Dagger Hilt
+    implementation(libs.hilt.android)
+    kapt(libs.google.dagger.compiler)
+    kapt(libs.hilt.compiler)
+
+}
+
