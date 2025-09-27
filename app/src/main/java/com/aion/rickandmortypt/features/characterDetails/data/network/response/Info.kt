@@ -1,4 +1,4 @@
-package com.aion.rickandmortypt.features.characterList.data.network.response
+package com.aion.rickandmortypt.features.characterDetails.data.network.response
 
 import com.google.gson.annotations.SerializedName
 

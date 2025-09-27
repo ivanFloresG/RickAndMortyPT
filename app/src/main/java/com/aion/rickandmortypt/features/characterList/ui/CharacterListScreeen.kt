@@ -51,12 +51,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import com.aion.rickandmortypt.R
-import com.aion.rickandmortypt.core.CharacterCardItem
+import com.aion.rickandmortypt.core.components.CharacterCardItem
+import com.aion.rickandmortypt.core.navigation.Details
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
-fun CharacterListScreen(viewModel: CharacterListViewModel) {
+fun CharacterListScreen(
+    viewModel: CharacterListViewModel,
+    navController: NavController
+) {
     val listState = rememberLazyListState()
 
     val ui by viewModel.state.collectAsStateWithLifecycle()
@@ -117,7 +122,7 @@ fun CharacterListScreen(viewModel: CharacterListViewModel) {
                     ) { index, character ->
                         AnimatedVisibility(remember { MutableTransitionState(true) }) {
                             CharacterCardItem(character) { idCharacter ->
-                                viewModel.onItemClicked(idCharacter)
+                                navController.navigate(Details(idCharacter))
                             }
                         }
                         if (index == (ui.page * 20) - 1) {

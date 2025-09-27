@@ -1,7 +1,7 @@
-package com.aion.rickandmortypt.features.characterList.domain.models
+package com.aion.rickandmortypt.features.characterDetails.domain.models
 
-import com.aion.rickandmortypt.features.characterList.data.network.response.Location
-import com.aion.rickandmortypt.features.characterList.data.network.response.Origin
+import com.aion.rickandmortypt.features.characterDetails.data.network.response.Location
+import com.aion.rickandmortypt.features.characterDetails.data.network.response.Origin
 
 data class Character(
     val id: Int,

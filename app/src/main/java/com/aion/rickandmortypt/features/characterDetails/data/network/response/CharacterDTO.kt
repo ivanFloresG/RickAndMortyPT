@@ -1,6 +1,8 @@
 package com.aion.rickandmortypt.features.characterList.data.network.response
 
-import com.aion.rickandmortypt.features.characterList.domain.models.Character
+import com.aion.rickandmortypt.features.characterDetails.data.network.response.Location
+import com.aion.rickandmortypt.features.characterDetails.data.network.response.Origin
+import com.aion.rickandmortypt.features.characterDetails.domain.models.Character
 import com.google.gson.annotations.SerializedName
 import kotlin.String
 import kotlin.collections.List
@@ -32,7 +34,7 @@ data class CharacterDTO(
     val created: String
 )
 
-fun CharacterDTO.toCharacter(): Character{
+fun CharacterDTO.toCharacter(): Character {
     return Character(
         id = id,
         name = name,

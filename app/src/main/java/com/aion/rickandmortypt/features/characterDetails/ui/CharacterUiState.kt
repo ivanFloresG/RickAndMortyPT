@@ -1,8 +1,6 @@
-package com.aion.rickandmortypt.features.characterList.ui
+package com.aion.rickandmortypt.features.characterDetails.ui
 
-import com.aion.rickandmortypt.features.characterDetails.domain.models.Character
-
-data class CharacterListUiState(
+data class CharacterUiState(
 
     val filterName: String = "",
     val filterState: String = "",
