@@ -12,12 +12,12 @@ data class CharacterListUiState(
     val appliedState: String = "",
     val appliedSpice: String = "",
 
-    val items: List<Character> = emptyList(),
+    val items: List<Character> = listOf(),
     val selected: Int? = null,
 
     val isRefreshing: Boolean = false,
     val isLoading: Boolean = false,
 
     val page: Int = 1,
-    val totalItems: Int? = null
+    val totalPages: Int = 0
 )

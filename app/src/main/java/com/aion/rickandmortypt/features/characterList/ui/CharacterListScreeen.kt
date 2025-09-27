@@ -54,8 +54,8 @@ fun CharacterListScreen(viewModel: CharacterListViewModel) {
         }
     }
 
-    val hasMore by remember(ui.items.size, ui.totalItems) {
-        mutableStateOf(ui.totalItems?.let { ui.items.size < it } ?: true)
+    val hasMore by remember(ui.items.size, ui.totalPages) {
+        mutableStateOf(ui.totalPages?.let { ui.items.size < it } ?: true)
     }
 
     Scaffold(
@@ -94,7 +94,7 @@ fun CharacterListScreen(viewModel: CharacterListViewModel) {
                                 { idProduct -> viewModel.onSelectProductItem(idProduct) })
                              */
                         }
-                        if (index == 19) {
+                        if (index == (ui.page * 20) -1) {
                             LaunchedEffect(Unit) {
                                 viewModel.loadMore()
                             }

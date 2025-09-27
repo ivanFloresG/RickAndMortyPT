@@ -43,11 +43,11 @@ class CharacterListViewModel @Inject constructor(
         _state.update { it.copy(filterSpice = text) }
     }
 
-    fun onItemClicked(id: Int){
+    fun onItemClicked(id: Int) {
         _state.update { it.copy(selected = id) }
     }
 
-    fun onRefresh(){
+    fun onRefresh() {
         _state.update {
             it.copy(
                 page = 1,
@@ -57,11 +57,17 @@ class CharacterListViewModel @Inject constructor(
         fetchPage(page = 1, append = false)
     }
 
-    fun loadMore(){
+    fun loadMore() {
         val s = _state.value
         if (s.isLoading || s.isRefreshing) return
+
+        val pageToLoad = s.page + 1
+        println(pageToLoad)
+        println(s.totalPages)
+        if (pageToLoad > s.totalPages) return
+
         _state.update { it.copy(isLoading = true) }
-        fetchPage(page = s.page + 1, append = true)
+        fetchPage(page = pageToLoad, append = true)
     }
 
     /*
@@ -86,17 +92,23 @@ class CharacterListViewModel @Inject constructor(
      */
 
     fun fetchPage(page: Int, append: Boolean) {
+
         viewModelScope.launch {
             characterListUseCase.invoke(page).onEach { result ->
                 when (result) {
                     is Result.Succes -> {
                         _state.update { prev ->
-                            val newList = if (append) prev.items + result.data?.characterList else result.data?.characterList
+                            val incomingList: List<Character> = result.data?.characterList ?: emptyList()
+                            val newList: List<Character> =
+                                if (append) prev.items + incomingList
+                                else incomingList
+
                             prev.copy(
-                                items = newList as List<Character>,
-                                //page = prev.page + 1,
+                                items = newList,
+                                page = page,
                                 isLoading = false,
-                                totalItems = result.data?.count
+                                isRefreshing = false,
+                                totalPages = result.data?.pages ?: 0
                             )
                         }
                     }

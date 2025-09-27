@@ -29,5 +29,5 @@ fun CharacterListDTO.toList(): CharacterListInfo {
             )
     }
 
-    return CharacterListInfo(count = info.count, pages = info.pages, characterList = list)
+    return CharacterListInfo(pages = info.pages, characterList = list)
 }
