@@ -2,6 +2,7 @@ package com.aion.rickandmortypt.features.characterList.ui
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -28,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.aion.rickandmortypt.core.CharacterCardItem
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -54,12 +57,8 @@ fun CharacterListScreen(viewModel: CharacterListViewModel) {
         }
     }
 
-    val hasMore by remember(ui.items.size, ui.totalPages) {
-        mutableStateOf(ui.totalPages?.let { ui.items.size < it } ?: true)
-    }
-
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
         snackbarHost = {
             SnackbarHost(snackBaHostState)
         },
@@ -77,7 +76,7 @@ fun CharacterListScreen(viewModel: CharacterListViewModel) {
             } else {
                 LazyColumn(
                     state = listState,
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.weight(0.9f),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     contentPadding = PaddingValues(horizontal = 10.dp),
                 ) {
@@ -85,14 +84,9 @@ fun CharacterListScreen(viewModel: CharacterListViewModel) {
                         items = ui.items
                     ) { index, character ->
                         AnimatedVisibility(remember { MutableTransitionState(true) }) {
-                            Text(text = character.name)
-                            Spacer(modifier = Modifier.padding(vertical = 30.dp))
-                            /*
-                            ProductCardItem(
-                                product,
-                                false,
-                                { idProduct -> viewModel.onSelectProductItem(idProduct) })
-                             */
+                            CharacterCardItem(character) {
+                                 idCharacter -> viewModel.onItemClicked(idCharacter)
+                            }
                         }
                         if (index == (ui.page * 20) -1) {
                             LaunchedEffect(Unit) {
