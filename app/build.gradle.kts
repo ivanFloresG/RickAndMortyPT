@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.serialization)
     id("kotlin-kapt")
     alias(libs.plugins.dagger.hilt.android)
 }
@@ -9,6 +10,8 @@ plugins {
 android {
     namespace = "com.aion.rickandmortypt"
     compileSdk = 36
+    val apiUrlTest = "https://rickandmortyapi.com"
+    val apiUrlProd = "https://rickandmortyapi.com"
 
     defaultConfig {
         applicationId = "com.aion.rickandmortypt"
@@ -21,7 +24,18 @@ android {
     }
 
     buildTypes {
+        debug {
+            applicationIdSuffix = ".test"
+            versionNameSuffix = ".test"
+            buildConfigField("String", "API_URL", "\"${apiUrlTest}\"")
+
+            isMinifyEnabled = false
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+        }
         release {
+            applicationIdSuffix = ".prod"
+            buildConfigField("String", "API_URL", "\"${apiUrlProd}\"")
+
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
@@ -78,5 +92,8 @@ dependencies {
 
     //Splashscreen
     implementation (libs.androidx.core.splashscreen)
+
+    //Glide
+    implementation(libs.glide)
 }
 
