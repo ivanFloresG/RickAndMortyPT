@@ -10,9 +10,9 @@ import javax.inject.Inject
 class CharacterListService @Inject constructor(
     private val apiClient: ApiClient
 ) {
-    suspend fun getCharacterList(page: Int): Response<CharacterListDTO>{
+    suspend fun getCharacterList(page: Int, name: String? = null, state: String? = null, spice: String? = null): Response<CharacterListDTO>{
         return withContext(Dispatchers.IO){
-            apiClient.getCharacterList(page)
+            apiClient.getCharacterList(page, name, state, spice)
         }
     }
 }

@@ -8,9 +8,15 @@ data class CharacterListUiState(
     val filterState: String = "",
     val filterSpice: String = "",
 
-    val appliedName: String = "",
-    val appliedState: String = "",
-    val appliedSpice: String = "",
+    val appliedName: String? = null,
+    val appliedState: String? = null,
+    val appliedSpice: String? = null,
+
+    val selectedAlive: Boolean = false,
+    val selectedDeath: Boolean = false,
+    val selectedUnknown: Boolean = false,
+
+    val isSearching: Boolean = false,
 
     val items: List<Character> = listOf(),
     val selected: Int? = null,

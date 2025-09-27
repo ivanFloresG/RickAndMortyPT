@@ -5,5 +5,5 @@ import com.aion.rickandmortypt.features.characterList.domain.models.CharacterLis
 import kotlinx.coroutines.flow.Flow
 
 interface CharacterListRepository {
-    suspend fun getCharacterList(page: Int): Flow<Result<CharacterListInfo>>
+    suspend fun getCharacterList(page: Int, name: String? = null, state: String? = null, spice: String? = null): Flow<Result<CharacterListInfo>>
 }

@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">Rick And Morty PT</string>
+    <string name="search">Buscar personaje...</string>
+    <string name="name">Nombre</string>
+    <string name="specie">Especie</string>
+    <string name="state">Estado</string>
+    <string name="applyFilters">Aplicar filtro</string>
+    <string name="clearFilters">Limpiar</string>
+    <string name="alive">Vivo</string>
+    <string name="dead">Muerto</string>
+    <string name="uknown">Desconocido</string>
+
 </resources>

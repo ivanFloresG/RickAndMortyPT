@@ -1,5 +1,6 @@
 package com.aion.rickandmortypt.core
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -39,6 +40,7 @@ fun CharacterCardItem(
             .fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
         shape = RoundedCornerShape(corner = CornerSize(20.dp)),
+        border = BorderStroke(1.dp, color = MaterialTheme.colorScheme.surfaceContainerHighest)
     ) {
         Row(modifier = Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
             CharacterImage(character.image, modifier = Modifier.size(100.dp))

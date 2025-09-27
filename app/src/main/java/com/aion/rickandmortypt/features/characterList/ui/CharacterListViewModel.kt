@@ -36,11 +36,24 @@ class CharacterListViewModel @Inject constructor(
     }
 
     fun onFilterState(text: String) {
-        _state.update { it.copy(filterState = text) }
+        _state.update {
+            it.copy(
+                filterState = text,
+                selectedAlive = text.equals("alive"),
+                selectedDeath = text.equals("dead"),
+                selectedUnknown = text.equals("unknown"),
+            )
+        }
     }
 
     fun onFilterSpice(text: String) {
-        _state.update { it.copy(filterSpice = text) }
+        _state.update {
+            it.copy(filterSpice = text)
+        }
+    }
+
+    fun onSearchClicked(isSearch: Boolean) {
+        _state.update { it.copy(isSearching = isSearch) }
     }
 
     fun onItemClicked(id: Int) {
@@ -70,7 +83,28 @@ class CharacterListViewModel @Inject constructor(
         fetchPage(page = pageToLoad, append = true)
     }
 
-    /*
+    fun onClearFilters() {
+        _state.update {
+            it.copy(
+                filterName = "",
+                filterSpice = "",
+                filterState = "",
+                appliedName = null,
+                appliedState = null,
+                appliedSpice = null,
+                selectedAlive = false,
+                selectedDeath = false,
+                selectedUnknown = false,
+                page = 1,
+                isRefreshing = true,
+                items = emptyList()
+            )
+        }
+
+        _events.tryEmit(CharacterListViewModelUiEvent.ScrollToTop)
+        fetchPage(page = 1, append = false)
+    }
+
     fun onApplyFilters() {
         val appliedName = _state.value.filterName.trim().ifBlank { null }
         val appliedState = _state.value.filterState.trim().ifBlank { null }
@@ -88,13 +122,12 @@ class CharacterListViewModel @Inject constructor(
         }
 
         _events.tryEmit(CharacterListViewModelUiEvent.ScrollToTop)
+        fetchPage(page = 1, append = false, name = appliedName, state = appliedState, spice = appliedSpice)
     }
-     */
 
-    fun fetchPage(page: Int, append: Boolean) {
-
+    fun fetchPage(page: Int, append: Boolean, name: String? = null, state: String? = null, spice: String? = null) {
         viewModelScope.launch {
-            characterListUseCase.invoke(page).onEach { result ->
+            characterListUseCase.invoke(page, name, state, spice).onEach { result ->
                 when (result) {
                     is Result.Succes -> {
                         _state.update { prev ->

@@ -23,10 +23,10 @@ override suspend fun getCharacterList(page: Int): Flow<Result<CharacterListInfo>
     }
     }
      */
-    override suspend fun getCharacterList(page: Int): Flow<Result<CharacterListInfo>>  = flow {
+    override suspend fun getCharacterList(page: Int, name: String?, state: String?, spice: String?): Flow<Result<CharacterListInfo>>  = flow {
         emit(Result.Loading())
         try {
-           val response = service.getCharacterList(page).body()?.toList()
+           val response = service.getCharacterList(page, name, state, spice).body()?.toList()
             emit(Result.Succes(response))
         } catch (e: HttpException){
             emit(Result.Error(
