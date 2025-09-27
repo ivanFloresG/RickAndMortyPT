@@ -15,6 +15,8 @@ converterGson = "3.0.0"
 loggingInterceptor = "5.1.0"
 okhttp = "5.1.0"
 gson = "2.13.2"
+roomKtx = "2.8.1"
+roomRuntime = "2.8.1"
 runtimeLivedata = "1.9.2"
 navigationCompose = "2.9.5"
 kotlinxSerializationJson = "1.9.0"
@@ -26,6 +28,7 @@ glide = "1.0.0-beta08"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -54,6 +57,8 @@ androidx-navigation-compose = { module = "androidx.navigation:navigation-compose
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 glide = {module = "com.github.bumptech.glide:compose", version.ref = "glide"}
+androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomKtx" }
+room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
