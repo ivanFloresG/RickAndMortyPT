@@ -42,7 +42,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -115,6 +114,17 @@ fun CharacterListScreen(
                 ui,
                 viewModel
             )
+
+            if (ui.isRefreshing) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
 
             if (ui.items.isEmpty() && !ui.isLoading && !ui.isRefreshing) {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
