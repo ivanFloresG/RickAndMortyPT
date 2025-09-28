@@ -39,7 +39,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import com.aion.rickandmortypt.R
+import com.aion.rickandmortypt.core.navigation.LocationMap
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 
@@ -48,7 +50,7 @@ import com.bumptech.glide.integration.compose.GlideImage
 fun CharacterDetailScreen(
     viewModel: CharacterViewModel,
     id: Int,
-    onBackPressed: () -> Unit,
+    navController: NavController
 ) {
     val listState = rememberLazyListState()
     val ui by viewModel.state.collectAsStateWithLifecycle()
@@ -73,7 +75,7 @@ fun CharacterDetailScreen(
                 navigationIcon = {
                     IconButton(
                         onClick = {
-                            onBackPressed()
+                            navController.popBackStack()
                         },
                         modifier = Modifier
                             .size(50.dp)
@@ -145,7 +147,7 @@ fun CharacterDetailScreen(
                         .padding(horizontal = 30.dp)
                 )
                 Spacer(modifier = Modifier.height(20.dp))
-                Location(ui)
+                Location(ui, navController)
                 Spacer(modifier = Modifier.height(10.dp))
 
             }
@@ -193,7 +195,7 @@ fun CharacterImage(url: String, modifier: Modifier) {
 
 
 @Composable
-fun Location(uiState: CharacterUiState) {
+fun Location(uiState: CharacterUiState, navController: NavController) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -212,7 +214,7 @@ fun Location(uiState: CharacterUiState) {
                 fontWeight = FontWeight.Bold,
             )
         }
-        Button(onClick = {}, modifier = Modifier.weight(3.5f)) {
+        Button(onClick = { navController.navigate(LocationMap(28.270833, -16.616667, uiState.item.name)) }, modifier = Modifier.weight(3.5f)) {
             Icon(
                 painterResource(R.drawable.ic_location),
                 contentDescription = "",

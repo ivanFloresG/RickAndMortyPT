@@ -8,19 +8,22 @@ import androidx.activity.viewModels
 import com.aion.rickandmortypt.core.navigation.NavigationWrapper
 import com.aion.rickandmortypt.features.characterDetails.ui.CharacterViewModel
 import com.aion.rickandmortypt.features.characterList.ui.CharacterListViewModel
+import com.aion.rickandmortypt.features.map.ui.MapViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val characterListViewModel: CharacterListViewModel by viewModels<CharacterListViewModel>()
     private val characterViewModel: CharacterViewModel by viewModels<CharacterViewModel>()
+    private val mapViewModel: MapViewModel by viewModels<MapViewModel>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             NavigationWrapper(
                 characterListViewModel,
-                characterViewModel
+                characterViewModel,
+                mapViewModel
             )
         }
     }

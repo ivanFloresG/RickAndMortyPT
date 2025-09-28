@@ -9,12 +9,15 @@ import com.aion.rickandmortypt.features.characterDetails.ui.CharacterDetailScree
 import com.aion.rickandmortypt.features.characterDetails.ui.CharacterViewModel
 import com.aion.rickandmortypt.features.characterList.ui.CharacterListScreen
 import com.aion.rickandmortypt.features.characterList.ui.CharacterListViewModel
+import com.aion.rickandmortypt.features.map.ui.MapScreen
+import com.aion.rickandmortypt.features.map.ui.MapViewModel
 import com.aion.rickandmortypt.ui.theme.RickAndMortyPTTheme
 
 @Composable
 fun NavigationWrapper(
     characterListViewModel: CharacterListViewModel,
-    characterViewModel: CharacterViewModel
+    characterViewModel: CharacterViewModel,
+    mapViewModel: MapViewModel
 ){
 
     RickAndMortyPTTheme {
@@ -30,6 +33,17 @@ fun NavigationWrapper(
                 CharacterDetailScreen(
                     characterViewModel,
                     id = args.id,
+                    navController
+                )
+            }
+
+            composable<LocationMap> { backStackEntry ->
+                val args: LocationMap = backStackEntry.toRoute()
+                MapScreen(
+                    mapViewModel,
+                    lat = args.lat,
+                    long = args.long,
+                    characterName = args.characterName,
                 ) { navController.popBackStack() }
             }
 

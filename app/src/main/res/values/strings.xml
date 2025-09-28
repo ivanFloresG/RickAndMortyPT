@@ -12,5 +12,7 @@
     <string name="details">Detalles</string>
     <string name="locate">Ubicar</string>
     <string name="location">Last location</string>
+    <string name="lastLocation">Última ubicación</string>
+    <string name="seeLocation">Ver ubicación</string>
 
 </resources>
