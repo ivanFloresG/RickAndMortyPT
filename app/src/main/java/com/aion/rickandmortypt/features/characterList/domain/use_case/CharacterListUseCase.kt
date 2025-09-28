@@ -27,6 +27,8 @@ class CharacterListUseCase @Inject constructor(
             when (apiRes) {
                 is Result.Succes -> {
                     val list = apiRes.data?.characterList.orEmpty()
+                    println(list.size)
+                    println(list.get(0).name)
                     if(list.isNotEmpty()){
                         repository.saveCharactersToDb(list)
                     }

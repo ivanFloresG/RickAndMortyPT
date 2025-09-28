@@ -23,6 +23,9 @@ interface CharacterDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAllCharacters(characters: List<CharacterEntity>)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertCharacterOnly(characters: CharacterEntity)
+
     suspend fun insertCharacter(character: CharacterEntity) {
         val existingCharacter = getCharacterById(character.id)
         if (existingCharacter != null) {
@@ -33,7 +36,6 @@ interface CharacterDao {
         } else {
             insertCharacter(character)
         }
-
     }
 
     @Query("SELECT * FROM character WHERE id = :id")
@@ -44,14 +46,16 @@ interface CharacterDao {
 
     suspend fun insertOrUpdateCharacters(characters: List<CharacterEntity>) {
         characters.forEach { newCharacter ->
+            println(newCharacter.name)
             val existingCharacter = getCharacterById(newCharacter.id)
+            println(existingCharacter)
             if (existingCharacter != null) {
                 val updateCharacter = newCharacter.copy(
                     favorite = existingCharacter.favorite
                 )
                 updateCharacter(updateCharacter)
             } else {
-                insertCharacter(newCharacter)
+                insertCharacterOnly(newCharacter)
             }
 
         }
