@@ -1,38 +1,29 @@
-package com.aion.rickandmortypt.features.characterList.data
+package com.aion.rickandmortypt.features.characterDetails.data
 
 import com.aion.rickandmortypt.core.data.database.dao.CharacterDao
 import com.aion.rickandmortypt.core.data.database.entities.CharacterEntity
 import com.aion.rickandmortypt.core.data.database.entities.toCharacter
 import com.aion.rickandmortypt.core.network.Result
+import com.aion.rickandmortypt.features.characterDetails.data.network.CharacterService
 import com.aion.rickandmortypt.features.characterDetails.domain.models.Character
 import com.aion.rickandmortypt.features.characterDetails.domain.models.toEntity
-import com.aion.rickandmortypt.features.characterList.data.network.CharacterListService
-import com.aion.rickandmortypt.features.characterList.data.network.response.toList
-import com.aion.rickandmortypt.features.characterList.domain.models.CharacterListInfo
+import com.aion.rickandmortypt.features.characterList.data.network.response.toCharacter
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import okio.IOException
 import retrofit2.HttpException
 import javax.inject.Inject
 
-class CharacterListRepositoryImp @Inject constructor(
-    private val service: CharacterListService,
+class CharacterRepositoryImp @Inject constructor(
+    private val service: CharacterService,
     private val characterDao: CharacterDao
-) : CharacterListRepository {
+) : CharacterRepository {
 
-    /*
-override suspend fun getCharacterList(page: Int): Flow<Result<CharacterListInfo>> {
-    return try{
-        var response = service.getCharacterList(page)
-        if(response.isSuccessful){ }
 
-    }
-    }
-     */
-    override suspend fun getCharacterListFromApi(page: Int, name: String?, state: String?, spice: String?): Flow<Result<CharacterListInfo>> = flow {
+    override suspend fun getCharacterFromApi(id: Int): Flow<Result<Character>> = flow {
         emit(Result.Loading())
         try {
-            val response = service.getCharacterList(page, name, state, spice).body()?.toList()
+            val response = service.getCharacter(id).body()?.toCharacter()
             emit(Result.Succes(response))
         } catch (e: HttpException) {
             emit(
@@ -52,16 +43,13 @@ override suspend fun getCharacterList(page: Int): Flow<Result<CharacterListInfo>
         }
     }
 
-    override suspend fun getCharacterListFromDb(
-        page: Int,
-        name: String?,
-        state: String?,
-        spice: String?
-    ): Flow<Result<CharacterListInfo>> = flow {
+    override suspend fun getCharacterFromDb(
+        id: Int,
+    ): Flow<Result<Character>> = flow {
         emit(Result.Loading())
         try {
-            val response: List<CharacterEntity> = characterDao.getAllCharacters(page, name, state, spice)
-            emit(Result.Succes(CharacterListInfo(pages = 42, response.map { it.toCharacter() })))
+            val response: CharacterEntity = characterDao.getCharacterById(id)
+            emit(Result.Succes(response.toCharacter()))
         } catch (e: HttpException) {
             emit(
                 Result.Error(
@@ -77,10 +65,16 @@ override suspend fun getCharacterList(page: Int): Flow<Result<CharacterListInfo>
                     data = null
                 )
             )
+
         }
     }
 
-    override suspend fun saveCharactersToDb(items: List<Character>) {
-        characterDao.insertOrUpdateCharacters(items.map { it.toEntity() })
+    override suspend fun saveCharacterToDb(item: Character) {
+        characterDao.insertCharacter(item.toEntity())
+    }
+
+    override suspend fun updateFavoriteStatus(id: Int, favorite: Boolean) {
+        characterDao.updateFavorite(id, favorite)
     }
 }
+

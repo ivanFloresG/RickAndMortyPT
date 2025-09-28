@@ -3,7 +3,7 @@ package com.aion.rickandmortypt.features.characterList.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aion.rickandmortypt.core.network.Result
-import com.aion.rickandmortypt.features.characterList.domain.models.Character
+import com.aion.rickandmortypt.features.characterDetails.domain.models.Character
 import com.aion.rickandmortypt.features.characterList.domain.use_case.CharacterListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.BufferOverflow

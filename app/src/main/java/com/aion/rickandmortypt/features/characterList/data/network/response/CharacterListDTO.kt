@@ -1,6 +1,7 @@
 package com.aion.rickandmortypt.features.characterList.data.network.response
 
-import com.aion.rickandmortypt.features.characterList.domain.models.Character
+import com.aion.rickandmortypt.features.characterDetails.data.network.response.Info
+import com.aion.rickandmortypt.features.characterDetails.domain.models.Character
 import com.aion.rickandmortypt.features.characterList.domain.models.CharacterListInfo
 import com.google.gson.annotations.SerializedName
 
@@ -25,7 +26,8 @@ fun CharacterListDTO.toList(): CharacterListInfo {
                 image = result.image,
                 episodes = result.episode,
                 url = result.url,
-                created = result.created
+                created = result.created,
+                favorite = false
             )
     }
 

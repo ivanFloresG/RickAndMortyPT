@@ -16,7 +16,7 @@ interface ApiClient {
         @Query("species") species: String? = null
     ): Response<CharacterListDTO>
 
-    @GET("/api/character/id")
+    @GET("/api/character/{id}")
     suspend fun getCharacter(@Path("id") id: Int): Response<CharacterDTO>
 
     @GET("/api/character")
