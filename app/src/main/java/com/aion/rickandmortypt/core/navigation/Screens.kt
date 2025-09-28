@@ -10,3 +10,7 @@ data class Details(val id: Int)
 
 @Serializable
 data class LocationMap(val lat: Double, val long: Double, val characterName: String)
+
+@Serializable
+data object Favorites
+

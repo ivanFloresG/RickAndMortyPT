@@ -29,6 +29,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -41,7 +42,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -55,6 +55,7 @@ import androidx.navigation.NavController
 import com.aion.rickandmortypt.R
 import com.aion.rickandmortypt.core.components.CharacterCardItem
 import com.aion.rickandmortypt.core.navigation.Details
+import com.aion.rickandmortypt.core.navigation.Favorites
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -66,7 +67,6 @@ fun CharacterListScreen(
 
     val ui by viewModel.state.collectAsStateWithLifecycle()
     val snackBaHostState = remember { SnackbarHostState() }
-    val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) { viewModel.onRefresh() }
 
@@ -91,6 +91,15 @@ fun CharacterListScreen(
         snackbarHost = {
             SnackbarHost(snackBaHostState)
         },
+        floatingActionButton = {
+            FloatingActionButton(onClick = { navController.navigate(Favorites) }) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_favorite),
+                    contentDescription = null
+                )
+            }
+
+        }
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -105,6 +114,17 @@ fun CharacterListScreen(
                 ui,
                 viewModel
             )
+
+            if (ui.isRefreshing) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
 
             if (ui.items.isEmpty() && !ui.isLoading && !ui.isRefreshing) {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -132,7 +152,7 @@ fun CharacterListScreen(
                         }
                     }
 
-                    if (ui.isRefreshing) {
+                    if (ui.isLoading) {
                         item {
                             Box(
                                 modifier = Modifier

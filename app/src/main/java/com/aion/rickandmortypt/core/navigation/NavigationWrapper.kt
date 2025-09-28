@@ -9,6 +9,8 @@ import com.aion.rickandmortypt.features.characterDetails.ui.CharacterDetailScree
 import com.aion.rickandmortypt.features.characterDetails.ui.CharacterViewModel
 import com.aion.rickandmortypt.features.characterList.ui.CharacterListScreen
 import com.aion.rickandmortypt.features.characterList.ui.CharacterListViewModel
+import com.aion.rickandmortypt.features.favoriteList.ui.FavoriteListScreen
+import com.aion.rickandmortypt.features.favoriteList.ui.FavoriteListViewModel
 import com.aion.rickandmortypt.features.map.ui.MapScreen
 import com.aion.rickandmortypt.features.map.ui.MapViewModel
 import com.aion.rickandmortypt.ui.theme.RickAndMortyPTTheme
@@ -17,7 +19,8 @@ import com.aion.rickandmortypt.ui.theme.RickAndMortyPTTheme
 fun NavigationWrapper(
     characterListViewModel: CharacterListViewModel,
     characterViewModel: CharacterViewModel,
-    mapViewModel: MapViewModel
+    mapViewModel: MapViewModel,
+    favoriteListViewModel: FavoriteListViewModel
 ){
 
     RickAndMortyPTTheme {
@@ -47,6 +50,9 @@ fun NavigationWrapper(
                 ) { navController.popBackStack() }
             }
 
+            composable<Favorites> {
+                FavoriteListScreen(favoriteListViewModel) { navController.popBackStack() }
+            }
 
         }
 

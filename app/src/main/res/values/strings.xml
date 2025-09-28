@@ -16,5 +16,6 @@
     <string name="seeLocation">Ver ubicación</string>
     <string name="cantLoading">No se pudo cargar...</string>
     <string name="loading">Cargando...</string>
+    <string name="favorites">Favoritos</string>
 
 </resources>
