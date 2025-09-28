@@ -14,11 +14,12 @@ interface CharacterDao {
                 "WHERE (:name IS NULL OR :name = '' OR name LIKE '%' || :name ||  '%' COLLATE NOCASE ) " +
                 "AND (:state IS NULL OR :state = '' OR status like '%' || :state ||  '%' COLLATE NOCASE) " +
                 "AND (:spice IS NULL OR :spice = '' OR species like '%' || :spice ||  '%' COLLATE NOCASE) " +
+                "AND (:favorite IS NULL OR favorite = :favorite) " +
                 "ORDER BY id ASC " +
                 "LIMIT 20 " +
                 "OFFSET ((:page-1) * 20)"
     )
-    suspend fun getAllCharacters(page: Int, name: String?, state: String?, spice: String?): List<CharacterEntity>
+    suspend fun getAllCharacters(page: Int, name: String?, state: String?, spice: String?, favorite: Boolean?): List<CharacterEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAllCharacters(characters: List<CharacterEntity>)
@@ -46,9 +47,7 @@ interface CharacterDao {
 
     suspend fun insertOrUpdateCharacters(characters: List<CharacterEntity>) {
         characters.forEach { newCharacter ->
-            println(newCharacter.name)
             val existingCharacter = getCharacterById(newCharacter.id)
-            println(existingCharacter)
             if (existingCharacter != null) {
                 val updateCharacter = newCharacter.copy(
                     favorite = existingCharacter.favorite

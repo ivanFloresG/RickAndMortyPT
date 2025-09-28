@@ -75,8 +75,6 @@ class CharacterListViewModel @Inject constructor(
         if (s.isLoading || s.isRefreshing) return
 
         val pageToLoad = s.page + 1
-        println(pageToLoad)
-        println(s.totalPages)
         if (pageToLoad > s.totalPages) return
 
         _state.update { it.copy(isLoading = true) }

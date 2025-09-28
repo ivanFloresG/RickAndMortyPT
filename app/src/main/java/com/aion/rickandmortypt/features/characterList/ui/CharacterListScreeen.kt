@@ -29,6 +29,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -55,6 +56,7 @@ import androidx.navigation.NavController
 import com.aion.rickandmortypt.R
 import com.aion.rickandmortypt.core.components.CharacterCardItem
 import com.aion.rickandmortypt.core.navigation.Details
+import com.aion.rickandmortypt.core.navigation.Favorites
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -66,7 +68,6 @@ fun CharacterListScreen(
 
     val ui by viewModel.state.collectAsStateWithLifecycle()
     val snackBaHostState = remember { SnackbarHostState() }
-    val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) { viewModel.onRefresh() }
 
@@ -91,6 +92,15 @@ fun CharacterListScreen(
         snackbarHost = {
             SnackbarHost(snackBaHostState)
         },
+        floatingActionButton = {
+            FloatingActionButton(onClick = { navController.navigate(Favorites) }) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_favorite),
+                    contentDescription = null
+                )
+            }
+
+        }
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -132,7 +142,7 @@ fun CharacterListScreen(
                         }
                     }
 
-                    if (ui.isRefreshing) {
+                    if (ui.isLoading) {
                         item {
                             Box(
                                 modifier = Modifier

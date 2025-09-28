@@ -56,11 +56,15 @@ override suspend fun getCharacterList(page: Int): Flow<Result<CharacterListInfo>
         page: Int,
         name: String?,
         state: String?,
-        spice: String?
+        spice: String?,
+        favorite: Boolean?
     ): Flow<Result<CharacterListInfo>> = flow {
         emit(Result.Loading())
         try {
-            val response: List<CharacterEntity> = characterDao.getAllCharacters(page, name, state, spice)
+            println("getCharacterListFromDb")
+            println("fav " + favorite)
+            val response: List<CharacterEntity> = characterDao.getAllCharacters(page, name, state, spice, favorite)
+            println(response.get(0).name)
             emit(Result.Succes(CharacterListInfo(pages = 42, response.map { it.toCharacter() })))
         } catch (e: HttpException) {
             emit(

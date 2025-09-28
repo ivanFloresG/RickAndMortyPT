@@ -27,8 +27,6 @@ class CharacterListUseCase @Inject constructor(
             when (apiRes) {
                 is Result.Succes -> {
                     val list = apiRes.data?.characterList.orEmpty()
-                    println(list.size)
-                    println(list.get(0).name)
                     if(list.isNotEmpty()){
                         repository.saveCharactersToDb(list)
                     }
@@ -45,4 +43,18 @@ class CharacterListUseCase @Inject constructor(
         } catch (e: IOException){
         }
     }.flowOn(Dispatchers.IO) as Flow<Result<CharacterListInfo>>
+
+
+    suspend fun getFavoriteList(
+        page: Int,
+        favorite: Boolean = true
+    ): Flow<Result<CharacterListInfo>> = flow {
+        try {
+            emitAll(repository.getCharacterListFromDb(page = page,favorite = favorite)
+                .filterNot { it is Result.Loading })
+
+        } catch (e: IOException){
+        }
+    }.flowOn(Dispatchers.IO) as Flow<Result<CharacterListInfo>>
+
 }

@@ -8,6 +8,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface CharacterListRepository {
     suspend fun getCharacterListFromApi(page: Int, name: String? = null, state: String? = null, spice: String? = null): Flow<Result<CharacterListInfo>>
-    suspend fun getCharacterListFromDb(page: Int, name: String? = null, state: String? = null, spice: String? = null): Flow<Result<CharacterListInfo>>
+    suspend fun getCharacterListFromDb(page: Int, name: String? = null, state: String? = null, spice: String? = null, favorite: Boolean? = null): Flow<Result<CharacterListInfo>>
     suspend fun saveCharactersToDb(items: List<Character>)
 }
