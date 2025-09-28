@@ -133,7 +133,7 @@ fun CharacterDetailScreen(
                     fontWeight = FontWeight.Bold,
                 )
                 Spacer(modifier = Modifier.height(20.dp))
-                CharacterImage(ui.item.image, Modifier.size(180.dp))
+                CharacterImage(ui.item.image, Modifier.size(180.dp), ui)
                 Spacer(modifier = Modifier.height(20.dp))
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
                     Label(ui.item.gender, R.drawable.ic_medical_info)
@@ -185,10 +185,11 @@ fun Label(
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun CharacterImage(url: String, modifier: Modifier) {
+fun CharacterImage(url: String, modifier: Modifier, uiState: CharacterUiState) {
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(30.dp))
+            .background(Color.Gray)
     ) {
         GlideImage(
             model = url,
@@ -198,16 +199,6 @@ fun CharacterImage(url: String, modifier: Modifier) {
                 Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
                     Image(painterResource(R.drawable.ic_person), contentDescription = null, modifier = Modifier.size(50.dp))
                     Text(text = stringResource(R.string.loading), color = Color.Gray)
-                }
-            },
-            failure = placeholder {
-                Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-                    Image(
-                        painterResource(R.drawable.ic_error),
-                        contentDescription = null,
-                        modifier = Modifier.size(30.dp),
-                    )
-                    Text(text = stringResource(R.string.cantLoading), color = Color.Red)
                 }
             },
             contentScale = ContentScale.Crop,
