@@ -226,7 +226,6 @@ fun Location(uiState: CharacterUiState, navController: NavController) {
             Pair(52.520008,  13.404954),
             Pair(48.856613,   2.352222),
             Pair(35.689487, 139.691711)
-
         )
         val randomLocation = locations.randomOrNull()
 
