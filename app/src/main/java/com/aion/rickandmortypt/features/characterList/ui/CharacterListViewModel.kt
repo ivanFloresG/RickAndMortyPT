@@ -60,16 +60,6 @@ class CharacterListViewModel @Inject constructor(
         _state.update { it.copy(selected = id) }
     }
 
-    fun onRefresh() {
-        _state.update {
-            it.copy(
-                page = 1,
-                isRefreshing = true,
-            )
-        }
-        fetchPage(page = 1, append = false)
-    }
-
     fun loadMore() {
         val s = _state.value
         if (s.isLoading || s.isRefreshing) return
@@ -81,7 +71,7 @@ class CharacterListViewModel @Inject constructor(
         fetchPage(page = pageToLoad, append = true)
     }
 
-    fun onClearFilters() {
+    fun refreshPage() {
         _state.update {
             it.copy(
                 filterName = "",

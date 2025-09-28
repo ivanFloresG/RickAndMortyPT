@@ -1,7 +1,5 @@
 package com.aion.rickandmortypt.features.characterList.ui
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -38,6 +36,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -68,7 +67,7 @@ fun CharacterListScreen(
     val ui by viewModel.state.collectAsStateWithLifecycle()
     val snackBaHostState = remember { SnackbarHostState() }
 
-    LaunchedEffect(Unit) { viewModel.onRefresh() }
+    LaunchedEffect(Unit) { viewModel.refreshPage() }
 
     LaunchedEffect(Unit) {
         viewModel.events.collectLatest { event ->
@@ -115,56 +114,52 @@ fun CharacterListScreen(
                 viewModel
             )
 
-            if (ui.isRefreshing) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
-                }
-            }
-
             if (ui.items.isEmpty() && !ui.isLoading && !ui.isRefreshing) {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text(text = "Sin resultados...")
                 }
             } else {
-                LazyColumn(
-                    state = listState,
+                PullToRefreshBox(
+                    isRefreshing = ui.isRefreshing,
+                    onRefresh = { viewModel.refreshPage() },
                     modifier = Modifier.weight(0.9f),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    contentPadding = PaddingValues(horizontal = 10.dp),
                 ) {
-                    itemsIndexed(
-                        items = ui.items
-                    ) { index, character ->
-                        AnimatedVisibility(remember { MutableTransitionState(true) }) {
+                    LazyColumn(
+                        state = listState,
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        contentPadding = PaddingValues(horizontal = 10.dp),
+                    ) {
+                        itemsIndexed(
+                            items = ui.items
+                        ) { index, character ->
+                            //AnimatedVisibility(remember { MutableTransitionState(true) }) {
                             CharacterCardItem(character) { idCharacter ->
                                 navController.navigate(Details(idCharacter))
                             }
-                        }
-                        if (index == (ui.page * 20) - 1) {
-                            LaunchedEffect(Unit) {
-                                viewModel.loadMore()
+                            // }
+                            if (index == (ui.page * 20) - 1) {
+                                LaunchedEffect(Unit) {
+                                    viewModel.loadMore()
+                                }
                             }
                         }
-                    }
 
-                    if (ui.isLoading) {
-                        item {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                CircularProgressIndicator()
+                        if (ui.isLoading) {
+                            item {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(16.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    CircularProgressIndicator()
+                                }
                             }
                         }
                     }
                 }
+
             }
         }
     }
@@ -227,7 +222,7 @@ fun SearchFields(modifier: Modifier, ui: CharacterListUiState, viewModel: Charac
 
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                     Button(
-                        onClick = { viewModel.onClearFilters() },
+                        onClick = { viewModel.refreshPage() },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.Transparent,
                             contentColor = MaterialTheme.colorScheme.onBackground,
