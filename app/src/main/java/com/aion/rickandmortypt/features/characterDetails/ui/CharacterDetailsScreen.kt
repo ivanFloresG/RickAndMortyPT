@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -93,9 +94,11 @@ fun CharacterDetailScreen(
                                 color = MaterialTheme.colorScheme.surfaceContainerLow,
                                 shape = RoundedCornerShape(50.dp)
                             )
+                        ,
+                        enabled = !ui.isLoading
                     ) {
                         Icon(
-                            painter = if(ui.item.favorite){
+                            painter = if (ui.item.favorite) {
                                 painterResource(R.drawable.ic_favorite_fill)
                             } else {
                                 painterResource(R.drawable.ic_favorite)
@@ -111,35 +114,41 @@ fun CharacterDetailScreen(
         },
         bottomBar = {}
     ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = ui.item.name,
-                style = MaterialTheme.typography.headlineLarge,
-                fontWeight = FontWeight.Bold,
-            )
-            Spacer(modifier = Modifier.height(20.dp))
-            CharacterImage(ui.item.image, Modifier.size(180.dp))
-            Spacer(modifier = Modifier.height(20.dp))
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
-                Label(ui.item.gender, R.drawable.ic_medical_info)
-                Label(ui.item.species, R.drawable.ic_genetic)
-                Label(ui.item.status, R.drawable.ic_favorite_fill)
+        if (ui.isLoading) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
             }
-            Spacer(modifier = Modifier.height(20.dp))
-            HorizontalDivider(
+        } else {
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 30.dp)
-            )
-            Spacer(modifier = Modifier.height(20.dp))
-            Location(ui)
-            Spacer(modifier = Modifier.height(10.dp))
+                    .fillMaxSize()
+                    .padding(innerPadding),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = ui.item.name,
+                    style = MaterialTheme.typography.headlineLarge,
+                    fontWeight = FontWeight.Bold,
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+                CharacterImage(ui.item.image, Modifier.size(180.dp))
+                Spacer(modifier = Modifier.height(20.dp))
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
+                    Label(ui.item.gender, R.drawable.ic_medical_info)
+                    Label(ui.item.species, R.drawable.ic_genetic)
+                    Label(ui.item.status, R.drawable.ic_favorite_fill)
+                }
+                Spacer(modifier = Modifier.height(20.dp))
+                HorizontalDivider(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 30.dp)
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+                Location(ui)
+                Spacer(modifier = Modifier.height(10.dp))
 
+            }
         }
     }
 
