@@ -9,5 +9,7 @@
     <string name="alive">Vivo</string>
     <string name="dead">Muerto</string>
     <string name="uknown">Desconocido</string>
+    <string name="details">Detalles</string>
+    <string name="locate">Ubicar</string>
 
 </resources>
