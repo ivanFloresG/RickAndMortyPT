@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -29,15 +28,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.aion.rickandmortypt.R
+import com.aion.rickandmortypt.core.auth.BiometricGate
 import com.aion.rickandmortypt.core.components.CharacterCardItem
-import com.aion.rickandmortypt.core.navigation.Details
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,6 +43,7 @@ fun FavoriteListScreen(
     viewModel: FavoriteListViewModel,
     onBackPressed: () -> Unit
 ) {
+
     val listState = rememberLazyListState()
     val ui by viewModel.state.collectAsStateWithLifecycle()
 
@@ -65,7 +64,7 @@ fun FavoriteListScreen(
                 navigationIcon = {
                     IconButton(
                         onClick = {
-                           onBackPressed()
+                            onBackPressed()
                         },
                         modifier = Modifier
                             .size(50.dp)
@@ -82,40 +81,77 @@ fun FavoriteListScreen(
         }
     )
     { innerPadding ->
-        LazyColumn(
-            state = listState,
-            modifier = Modifier.fillMaxSize().padding(innerPadding),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = PaddingValues(horizontal = 10.dp),
-        ) {
-            itemsIndexed(
-                items = ui.items
-            ) { index, character ->
-                AnimatedVisibility(remember { MutableTransitionState(true) }) {
-                    CharacterCardItem(character) { idCharacter ->
-                        //navController.navigate(Details(idCharacter))
+        BiometricGate(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
+            LazyColumn(
+                state = listState,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                contentPadding = PaddingValues(horizontal = 10.dp),
+            ) {
+                itemsIndexed(
+                    items = ui.items
+                ) { index, character ->
+                    AnimatedVisibility(remember { MutableTransitionState(true) }) {
+                        CharacterCardItem(character) { idCharacter ->
+                            //navController.navigate(Details(idCharacter))
+                        }
+                    }
+
+                    if (index == (ui.page * 20) - 1) {
+                        LaunchedEffect(Unit) {
+                            viewModel.loadMore()
+                        }
                     }
                 }
 
-                if (index == (ui.page * 20) - 1) {
-                    LaunchedEffect(Unit) {
-                        viewModel.loadMore()
-                    }
-                }
-            }
-
-            if (ui.isLoading) {
-                item {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator()
+                if (ui.isLoading) {
+                    item {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
+                        }
                     }
                 }
             }
         }
     }
 }
+/*
+private var canAuthenticate = false
+private lateinit var promptInfo: androidx.biometric.BiometricPrompt.PromptInfo
+
+private fun setupAuth(){
+    if (BiometricManager.from(LocalContext.current).canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG
+    or BiometricManager.Authenticators.DEVICE_CREDENTIAL) == BiometricManager.BIOMETRIC_SUCCESS)) {
+        canAuthenticate = true
+        promptInfo = androidx.biometric.BiometricPrompt.PromptInfo.Builder()
+            .setTitle("Biometric Auth")
+            .setSubtitle("Autenticate utilizando el sensor")
+            .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_STRONG
+                    or BiometricManager.Authenticators.DEVICE_CREDENTIAL)
+            .build()
+
+    }
+}
+
+private fun authenticate(auth: (auth: Boolean) -> Unit){
+    if(canAuthenticate){
+        BiometricPrompt(
+            this, ContextCompat.getMainExecutor(this),
+            object : BiometricPrompt.AuthenticationCallback() {
+                override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+                    super.onAuthenticationSucceeded(result)
+                    auth(true)
+                }
+            }).authenticate(promptInfo)
+    } else {
+        auth(false)
+    }
+}
+ */

@@ -1,5 +1,8 @@
 package com.aion.rickandmortypt.features.characterList.ui
 
+import android.widget.Toast
+import androidx.biometric.BiometricManager
+import androidx.biometric.BiometricPrompt
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -45,10 +48,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.aion.rickandmortypt.R
@@ -56,6 +62,7 @@ import com.aion.rickandmortypt.core.components.CharacterCardItem
 import com.aion.rickandmortypt.core.navigation.Details
 import com.aion.rickandmortypt.core.navigation.Favorites
 import kotlinx.coroutines.flow.collectLatest
+import java.util.concurrent.Executor
 
 @Composable
 fun CharacterListScreen(
@@ -66,6 +73,8 @@ fun CharacterListScreen(
 
     val ui by viewModel.state.collectAsStateWithLifecycle()
     val snackBaHostState = remember { SnackbarHostState() }
+
+    val biometricManager = BiometricManager.from(LocalContext.current)
 
     LaunchedEffect(Unit) { viewModel.refreshPage() }
 
@@ -372,3 +381,44 @@ fun FilterChip(viewModel: CharacterListViewModel, ui: CharacterListUiState) {
 
     }
 }
+
+/*
+@Composable
+fun FingerPrintAuth(canAuth: Boolean, onAuthSuccsess() -> Unit){
+    val contex = LocalContext.current
+    val activity = context as FragmentActivity
+
+    val executor: Executor = ContextCompat.getMainExecutor(context)
+
+    val biometricPrompt = remember {
+        BiometricPrompt(
+            activity, executor,
+            object : BiometricPrompt.AuthenticationCallback() {
+                override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+                    super.onAuthenticationSucceeded(result)
+                    Toast.makeText(contex, "FINGERPRINT MATCHED", Toast.LENGTH_SHORT).show()
+                }
+
+                override fun onAuthenticationFailed() {
+                    super.onAuthenticationFailed()
+                    Toast.makeText(contex, "FINGERPRINT failed", Toast.LENGTH_SHORT).show()
+                }
+
+                override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
+                    super.onAuthenticationError(errorCode, errString)
+                    Toast.makeText(contex, "FINGERPRINT error", Toast.LENGTH_SHORT).show()
+                }
+            })
+    }
+
+    val promptInfo = remember {
+        BiometricPrompt.PromptInfo.Builder()
+            .setTitle("Biometric Auth")
+            .setSubtitle("Use fingerprint to acces the screen")
+            .setNegativeButtonText("Cancel")
+            .build()
+
+        if (canAuth) biometricPrompt.authenticate(promptInfo)
+    }
+}
+ */

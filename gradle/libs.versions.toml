@@ -1,6 +1,6 @@
 [versions]
 agp = "8.13.0"
-coilCompose = "3.3.0"
+biometric = "1.1.0"
 kotlin = "2.2.20"
 coreKtx = "1.17.0"
 junit = "4.13.2"
@@ -28,8 +28,10 @@ dagger = "2.57.2"
 hiltAndroid = "2.57.2"
 glide = "1.0.0-beta08"
 playServicesMapsVersion = "19.2.0"
+appcompat = "1.7.1"
 
 [libraries]
+androidx-biometric = { module = "androidx.biometric:biometric", version.ref = "biometric" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -64,6 +66,7 @@ androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", versi
 glide = {module = "com.github.bumptech.glide:compose", version.ref = "glide"}
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomKtx" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomKtx" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
