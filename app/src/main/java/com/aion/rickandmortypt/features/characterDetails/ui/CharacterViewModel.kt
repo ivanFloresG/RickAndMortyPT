@@ -3,13 +3,12 @@ package com.aion.rickandmortypt.features.characterDetails.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aion.rickandmortypt.core.network.Result
+import com.aion.rickandmortypt.features.characterDetails.data.network.response.Location
+import com.aion.rickandmortypt.features.characterDetails.data.network.response.Origin
+import com.aion.rickandmortypt.features.characterDetails.domain.models.Character
 import com.aion.rickandmortypt.features.characterDetails.domain.use_case.CharacterUseCase
-import com.aion.rickandmortypt.features.characterList.domain.use_case.CharacterListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -21,5 +20,78 @@ import javax.inject.Inject
 class CharacterViewModel @Inject constructor(
     private val characterUseCase: CharacterUseCase
 ) : ViewModel() {
+    private val _state = MutableStateFlow(CharacterUiState())
+    val state: StateFlow<CharacterUiState> = _state
+
+    fun clearData(){
+        _state.update { prev ->
+            prev.copy(
+                item = Character(
+                    0,
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    Origin("", ""),
+                    Location("", ""),
+                    "",
+                    emptyList(),
+                    "",
+                    ""
+                ),
+                isLoading = false,
+                isRefreshing = false,
+            )
+        }
+    }
+
+    fun fetchCharacter(id: Int) {
+        viewModelScope.launch {
+            characterUseCase.invoke(id).onEach { result ->
+                when (result) {
+                    is Result.Succes -> {
+                        _state.update { prev ->
+                            prev.copy(
+                                item = result.data ?: Character(
+                                    0,
+                                    "",
+                                    "",
+                                    "",
+                                    "",
+                                    "",
+                                    Origin("", ""),
+                                    Location("", ""),
+                                    "",
+                                    emptyList(),
+                                    "",
+                                    ""
+                                ),
+                                isLoading = false,
+                                isRefreshing = false,
+                            )
+                        }
+                    }
+
+                    is Result.Error -> {
+                        _state.update { prev ->
+                            prev.copy(
+                                isLoading = false,
+                            )
+                        }
+                    }
+
+                    is Result.Loading -> {
+                        _state.update { prev ->
+                            prev.copy(
+                                isLoading = true,
+                            )
+                        }
+                    }
+                }
+            }.launchIn(this)
+
+        }
+    }
 
 }

@@ -11,5 +11,6 @@
     <string name="uknown">Desconocido</string>
     <string name="details">Detalles</string>
     <string name="locate">Ubicar</string>
+    <string name="location">Last location</string>
 
 </resources>

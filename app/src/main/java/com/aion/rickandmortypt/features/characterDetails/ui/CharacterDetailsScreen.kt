@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -24,6 +25,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,6 +37,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.aion.rickandmortypt.R
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
@@ -44,6 +49,17 @@ fun CharacterDetailScreen(
     id: Int,
     onBackPressed: () -> Unit,
 ) {
+    val listState = rememberLazyListState()
+    val ui by viewModel.state.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) { viewModel.fetchCharacter(id) }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            viewModel.clearData()
+        }
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -98,24 +114,26 @@ fun CharacterDetailScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Rick and Morty",
+                text = ui.item.name,
                 style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Bold,
             )
             Spacer(modifier = Modifier.height(20.dp))
-            CharacterImage("https://rickandmortyapi.com/api/character/avatar/1.jpeg", Modifier.size(180.dp))
+            CharacterImage(ui.item.image, Modifier.size(180.dp))
             Spacer(modifier = Modifier.height(20.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
-                Label("Genero", R.drawable.ic_medical_info)
-                Label("Especie", R.drawable.ic_genetic)
-                Label("Estado", R.drawable.ic_favorite_fill)
+                Label(ui.item.gender, R.drawable.ic_medical_info)
+                Label(ui.item.species, R.drawable.ic_genetic)
+                Label(ui.item.status, R.drawable.ic_favorite_fill)
             }
             Spacer(modifier = Modifier.height(20.dp))
-            HorizontalDivider(modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 30.dp))
+            HorizontalDivider(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 30.dp)
+            )
             Spacer(modifier = Modifier.height(20.dp))
-            Locaion()
+            Location(ui)
             Spacer(modifier = Modifier.height(10.dp))
 
         }
@@ -162,19 +180,21 @@ fun CharacterImage(url: String, modifier: Modifier) {
 
 
 @Composable
-fun Locaion(){
-    Row(modifier = Modifier
-        .fillMaxWidth()
-        .padding(horizontal = 10.dp), verticalAlignment = Alignment.CenterVertically) {
+fun Location(uiState: CharacterUiState) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 10.dp), verticalAlignment = Alignment.CenterVertically
+    ) {
         Column(modifier = Modifier.weight(6.5f)) {
             Text(
-                text = "Las known location",
+                text = stringResource(R.string.locate),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.surfaceContainerHighest
             )
             Spacer(modifier = Modifier.height(10.dp))
             Text(
-                text ="Earth (Replacement)",
+                text = uiState.item.location.name,
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
             )
@@ -183,7 +203,9 @@ fun Locaion(){
             Icon(
                 painterResource(R.drawable.ic_location),
                 contentDescription = "",
-                modifier = Modifier.size(25.dp).padding(end = 3.dp),
+                modifier = Modifier
+                    .size(25.dp)
+                    .padding(end = 3.dp),
                 tint = MaterialTheme.colorScheme.onPrimary
             )
             Text(stringResource(R.string.locate))
