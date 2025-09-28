@@ -26,7 +26,8 @@ fun CharacterListDTO.toList(): CharacterListInfo {
                 image = result.image,
                 episodes = result.episode,
                 url = result.url,
-                created = result.created
+                created = result.created,
+                favorite = false
             )
     }
 

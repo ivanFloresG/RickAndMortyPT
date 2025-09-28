@@ -77,7 +77,6 @@ override suspend fun getCharacterList(page: Int): Flow<Result<CharacterListInfo>
                     data = null
                 )
             )
-
         }
     }
 

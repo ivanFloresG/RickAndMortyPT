@@ -86,7 +86,7 @@ fun CharacterDetailScreen(
                 },
                 actions = {
                     IconButton(
-                        onClick = { },
+                        onClick = { viewModel.onFavoriteClicked() },
                         modifier = Modifier
                             .size(50.dp)
                             .background(
@@ -95,7 +95,11 @@ fun CharacterDetailScreen(
                             )
                     ) {
                         Icon(
-                            painterResource(R.drawable.ic_favorite_fill),
+                            painter = if(ui.item.favorite){
+                                painterResource(R.drawable.ic_favorite_fill)
+                            } else {
+                                painterResource(R.drawable.ic_favorite)
+                            },
                             contentDescription = "",
                             modifier = Modifier.size(25.dp),
                             tint = Color.Red

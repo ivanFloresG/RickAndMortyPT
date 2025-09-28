@@ -16,7 +16,8 @@ data class Character(
     val image: String,
     val episodes: List<String>,
     val url: String,
-    val created: String
+    val created: String,
+    val favorite: Boolean
 )
 
 fun Character.toEntity() = CharacterEntity(
@@ -31,5 +32,5 @@ fun Character.toEntity() = CharacterEntity(
     image = image,
     url = url,
     created = created,
-    favorite = false
+    favorite = favorite,
 )

@@ -38,5 +38,6 @@ fun CharacterEntity.toCharacter() =
             image = image,
             episodes = emptyList(),
             url = url,
-            created = created
+            created = created,
+            favorite = favorite
         )

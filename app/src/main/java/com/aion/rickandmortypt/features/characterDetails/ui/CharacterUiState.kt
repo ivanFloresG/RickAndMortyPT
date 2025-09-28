@@ -16,7 +16,8 @@ data class CharacterUiState(
         "",
         emptyList(),
         "",
-        ""
+        "",
+        favorite = false
         ),
 
     val isRefreshing: Boolean = false,

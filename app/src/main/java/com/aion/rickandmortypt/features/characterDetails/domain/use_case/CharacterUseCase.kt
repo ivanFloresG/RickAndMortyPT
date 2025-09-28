@@ -44,4 +44,8 @@ class CharacterUseCase @Inject constructor(
         } catch (e: IOException){
         }
     }.flowOn(Dispatchers.IO) as Flow<Result<Character>>
+
+    suspend fun updateFavoriteStatus(id: Int, status: Boolean){
+       repository.updateFavoriteStatus(id, status)
+    }
 }

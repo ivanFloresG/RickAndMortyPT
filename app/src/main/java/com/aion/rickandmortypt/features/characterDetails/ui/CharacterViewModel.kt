@@ -38,11 +38,24 @@ class CharacterViewModel @Inject constructor(
                     "",
                     emptyList(),
                     "",
-                    ""
+                    "",
+                    favorite = false
                 ),
                 isLoading = false,
                 isRefreshing = false,
             )
+        }
+    }
+
+    fun onFavoriteClicked(){
+        _state.update { prev ->
+            prev.copy(
+                item = prev.item.copy(favorite = prev.item.favorite.not())
+            )
+        }
+
+        viewModelScope.launch {
+            characterUseCase.updateFavoriteStatus(_state.value.item.id, _state.value.item.favorite)
         }
     }
 
@@ -65,7 +78,8 @@ class CharacterViewModel @Inject constructor(
                                     "",
                                     emptyList(),
                                     "",
-                                    ""
+                                    "",
+                                    false
                                 ),
                                 isLoading = false,
                                 isRefreshing = false,

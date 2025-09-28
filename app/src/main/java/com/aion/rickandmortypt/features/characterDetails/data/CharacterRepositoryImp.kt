@@ -72,5 +72,9 @@ class CharacterRepositoryImp @Inject constructor(
     override suspend fun saveCharacterToDb(item: Character) {
         characterDao.insertCharacter(item.toEntity())
     }
+
+    override suspend fun updateFavoriteStatus(id: Int, favorite: Boolean) {
+        characterDao.updateFavorite(id, favorite)
+    }
 }
 

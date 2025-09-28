@@ -47,6 +47,7 @@ fun CharacterDTO.toCharacter(): Character {
         image = image,
         episodes = episode,
         url = url,
-        created = created
+        created = created,
+        favorite = false
     )
 }

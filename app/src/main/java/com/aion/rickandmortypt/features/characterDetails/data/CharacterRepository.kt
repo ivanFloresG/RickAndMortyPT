@@ -9,4 +9,5 @@ interface CharacterRepository {
     suspend fun getCharacterFromApi(id: Int): Flow<Result<Character>>
     suspend fun getCharacterFromDb(id: Int): Flow<Result<Character>>
     suspend fun saveCharacterToDb(item: Character)
+    suspend fun updateFavoriteStatus(id: Int, favorite: Boolean)
 }
