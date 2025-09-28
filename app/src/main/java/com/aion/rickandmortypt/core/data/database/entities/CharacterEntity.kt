@@ -6,7 +6,6 @@ import androidx.room.PrimaryKey
 import com.aion.rickandmortypt.features.characterDetails.data.network.response.Location
 import com.aion.rickandmortypt.features.characterDetails.data.network.response.Origin
 import com.aion.rickandmortypt.features.characterDetails.domain.models.Character
-import com.aion.rickandmortypt.features.characterList.domain.models.CharacterListInfo
 
 @Entity(tableName = "character")
 data class CharacterEntity(
@@ -18,26 +17,26 @@ data class CharacterEntity(
     @ColumnInfo(name = "type") val type: String,
     @ColumnInfo(name = "gender") val gender: String,
     @ColumnInfo(name = "image") val image: String,
-    @ColumnInfo(name = "idLocation") val idLocation: Int,
-    @ColumnInfo(name = "idOrigin") val idOrigin: Int,
+    @ColumnInfo(name = "location") val location: String,
+    @ColumnInfo(name = "origin") val origin: String,
     @ColumnInfo(name = "url") val url: String,
     @ColumnInfo(name = "created") val created: String,
     @ColumnInfo(name = "favorite") val favorite: Boolean
 )
 
 fun CharacterEntity.toCharacter() =
-        Character(
-            id = id,
-            name = name,
-            status = status,
-            species = species,
-            type =  type,
-            gender = gender,
-            origin = Origin(name = "", url = "") ,
-            location = Location(name ="", url = ""),
-            image = image,
-            episodes = emptyList(),
-            url = url,
-            created = created,
-            favorite = favorite
-        )
+    Character(
+        id = id,
+        name = name,
+        status = status,
+        species = species,
+        type = type,
+        gender = gender,
+        origin = Origin(name = origin, url = ""),
+        location = Location(name = location, url = ""),
+        image = image,
+        episodes = emptyList(),
+        url = url,
+        created = created,
+        favorite = favorite
+    )

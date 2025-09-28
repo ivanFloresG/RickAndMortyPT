@@ -17,7 +17,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -95,8 +94,7 @@ fun CharacterDetailScreen(
                             .background(
                                 color = MaterialTheme.colorScheme.surfaceContainerLow,
                                 shape = RoundedCornerShape(50.dp)
-                            )
-                        ,
+                            ),
                         enabled = !ui.isLoading
                     ) {
                         Icon(
@@ -141,14 +139,18 @@ fun CharacterDetailScreen(
                     Label(ui.item.status, R.drawable.ic_favorite_fill)
                 }
                 Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(20.dp))
+                Location(ui, navController)
+                Spacer(modifier = Modifier.height(10.dp))
+
+                /*
                 HorizontalDivider(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 30.dp)
                 )
-                Spacer(modifier = Modifier.height(20.dp))
-                Location(ui, navController)
-                Spacer(modifier = Modifier.height(10.dp))
+
+                 */
 
             }
         }
@@ -161,12 +163,15 @@ fun Label(
     text: String,
     icon: Int
 ) {
-    Row(horizontalArrangement = Arrangement.SpaceEvenly) {
+    Row(
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Icon(
             painterResource(icon),
             contentDescription = null,
             modifier = Modifier.size(20.dp),
-            tint = MaterialTheme.colorScheme.onBackground
+            tint = MaterialTheme.colorScheme.secondary
         )
         Spacer(modifier = Modifier.width(5.dp))
         Text(
@@ -181,7 +186,7 @@ fun Label(
 fun CharacterImage(url: String, modifier: Modifier) {
     Box(
         modifier = modifier
-            .clip(RoundedCornerShape(50.dp))
+            .clip(RoundedCornerShape(30.dp))
     ) {
         GlideImage(
             model = url,
@@ -205,7 +210,7 @@ fun Location(uiState: CharacterUiState, navController: NavController) {
             Text(
                 text = stringResource(R.string.locate),
                 style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.surfaceContainerHighest
+                color = MaterialTheme.colorScheme.secondary
             )
             Spacer(modifier = Modifier.height(10.dp))
             Text(
@@ -217,14 +222,14 @@ fun Location(uiState: CharacterUiState, navController: NavController) {
 
         val locations = setOf(
             Pair(19.432608, -99.133209),
-            Pair(40.416775,  -3.703790),
-            Pair(51.507351,  -0.127758),
+            Pair(40.416775, -3.703790),
+            Pair(51.507351, -0.127758),
             Pair(40.712776, -74.005974),
             Pair(43.653225, -79.383186),
             Pair(-23.550520, -46.633308),
             Pair(-34.603722, -58.381592),
-            Pair(52.520008,  13.404954),
-            Pair(48.856613,   2.352222),
+            Pair(52.520008, 13.404954),
+            Pair(48.856613, 2.352222),
             Pair(35.689487, 139.691711)
         )
         val randomLocation = locations.randomOrNull()
