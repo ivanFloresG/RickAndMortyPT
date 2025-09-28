@@ -214,7 +214,23 @@ fun Location(uiState: CharacterUiState, navController: NavController) {
                 fontWeight = FontWeight.Bold,
             )
         }
-        Button(onClick = { navController.navigate(LocationMap(28.270833, -16.616667, uiState.item.name)) }, modifier = Modifier.weight(3.5f)) {
+
+        val locations = setOf(
+            Pair(19.432608, -99.133209),
+            Pair(40.416775,  -3.703790),
+            Pair(51.507351,  -0.127758),
+            Pair(40.712776, -74.005974),
+            Pair(43.653225, -79.383186),
+            Pair(-23.550520, -46.633308),
+            Pair(-34.603722, -58.381592),
+            Pair(52.520008,  13.404954),
+            Pair(48.856613,   2.352222),
+            Pair(35.689487, 139.691711)
+
+        )
+        val randomLocation = locations.randomOrNull()
+
+        Button(onClick = { navController.navigate(LocationMap(randomLocation!!.first, randomLocation!!.second, uiState.item.name)) }, modifier = Modifier.weight(3.5f)) {
             Icon(
                 painterResource(R.drawable.ic_location),
                 contentDescription = "",
