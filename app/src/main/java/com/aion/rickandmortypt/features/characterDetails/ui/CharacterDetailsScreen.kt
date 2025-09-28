@@ -1,5 +1,6 @@
 package com.aion.rickandmortypt.features.characterDetails.ui
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -43,6 +44,7 @@ import com.aion.rickandmortypt.R
 import com.aion.rickandmortypt.core.navigation.LocationMap
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
+import com.bumptech.glide.integration.compose.placeholder
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalGlideComposeApi::class)
 @Composable
@@ -192,6 +194,22 @@ fun CharacterImage(url: String, modifier: Modifier) {
             model = url,
             contentDescription = "A description of the image",
             modifier = Modifier.fillMaxSize(),
+            loading = placeholder {
+                Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+                    Image(painterResource(R.drawable.ic_person), contentDescription = null, modifier = Modifier.size(50.dp))
+                    Text(text = stringResource(R.string.loading), color = Color.Gray)
+                }
+            },
+            failure = placeholder {
+                Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+                    Image(
+                        painterResource(R.drawable.ic_error),
+                        contentDescription = null,
+                        modifier = Modifier.size(30.dp),
+                    )
+                    Text(text = stringResource(R.string.cantLoading), color = Color.Red)
+                }
+            },
             contentScale = ContentScale.Crop,
         )
     }

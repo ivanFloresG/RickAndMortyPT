@@ -14,5 +14,7 @@
     <string name="location">Last location</string>
     <string name="lastLocation">Última ubicación</string>
     <string name="seeLocation">Ver ubicación</string>
+    <string name="cantLoading">No se pudo cargar...</string>
+    <string name="loading">Cargando...</string>
 
 </resources>
