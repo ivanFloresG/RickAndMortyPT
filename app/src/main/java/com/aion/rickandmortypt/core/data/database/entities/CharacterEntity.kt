@@ -18,6 +18,7 @@ data class CharacterEntity(
     @ColumnInfo(name = "gender") val gender: String,
     @ColumnInfo(name = "image") val image: String,
     @ColumnInfo(name = "location") val location: String,
+    @ColumnInfo(name = "episode") val episode: String,
     @ColumnInfo(name = "origin") val origin: String,
     @ColumnInfo(name = "url") val url: String,
     @ColumnInfo(name = "created") val created: String,
@@ -34,8 +35,11 @@ fun CharacterEntity.toCharacter() =
         gender = gender,
         origin = Origin(name = origin, url = ""),
         location = Location(name = location, url = ""),
+        episodes = episode
+            .split(",")
+            .filter { it.isNotBlank() }
+            .map { "chapter/$it" },
         image = image,
-        episodes = emptyList(),
         url = url,
         created = created,
         favorite = favorite

@@ -123,7 +123,7 @@ fun CharacterListScreen(
                 )
             }) {
                 Icon(
-                    painter = painterResource(R.drawable.ic_favorite),
+                    painter = painterResource(R.drawable.ic_favorite_fill),
                     contentDescription = null
                 )
             }
