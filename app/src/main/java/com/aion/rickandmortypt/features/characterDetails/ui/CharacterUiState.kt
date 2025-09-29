@@ -2,6 +2,7 @@ package com.aion.rickandmortypt.features.characterDetails.ui
 import com.aion.rickandmortypt.features.characterDetails.data.network.response.Location
 import com.aion.rickandmortypt.features.characterDetails.data.network.response.Origin
 import com.aion.rickandmortypt.features.characterDetails.domain.models.Character
+import com.aion.rickandmortypt.features.characterDetails.domain.models.Episode
 
 data class CharacterUiState(
     val item: Character = Character(
@@ -19,6 +20,8 @@ data class CharacterUiState(
         "",
         favorite = false
         ),
+
+    val episodes: List<Episode> = listOf(),
 
     val isRefreshing: Boolean = false,
     val isLoading: Boolean = false,

@@ -47,6 +47,22 @@ class CharacterViewModel @Inject constructor(
         }
     }
 
+    fun onChapterClicked(id: Int){
+        _state.update { prev ->
+            prev.copy(
+                episodes = prev.episodes.map { episode ->
+                    if(episode.id == id){
+                       episode.copy(watched = !episode.watched)
+                    } else {
+                        episode
+                    }
+                },
+                isLoading = false,
+                isRefreshing = false,
+            )
+        }
+    }
+
     fun onFavoriteClicked(){
         _state.update { prev ->
             prev.copy(
