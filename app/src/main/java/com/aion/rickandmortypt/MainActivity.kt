@@ -1,11 +1,10 @@
 package com.aion.rickandmortypt
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.fragment.app.FragmentActivity
 import com.aion.rickandmortypt.core.navigation.NavigationWrapper
 import com.aion.rickandmortypt.features.characterDetails.ui.CharacterViewModel
 import com.aion.rickandmortypt.features.characterList.ui.CharacterListViewModel
@@ -14,7 +13,7 @@ import com.aion.rickandmortypt.features.map.ui.MapViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class MainActivity : FragmentActivity() {
     private val characterListViewModel: CharacterListViewModel by viewModels<CharacterListViewModel>()
     private val characterViewModel: CharacterViewModel by viewModels<CharacterViewModel>()
     private val mapViewModel: MapViewModel by viewModels<MapViewModel>()

@@ -1,5 +1,9 @@
 package com.aion.rickandmortypt.features.characterList.ui
 
+import android.annotation.SuppressLint
+import android.widget.Toast
+import androidx.biometric.BiometricManager
+import androidx.biometric.BiometricPrompt
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -45,18 +49,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.aion.rickandmortypt.R
+import com.aion.rickandmortypt.core.auth.BiometricAuthenticator
 import com.aion.rickandmortypt.core.components.CharacterCardItem
 import com.aion.rickandmortypt.core.navigation.Details
 import com.aion.rickandmortypt.core.navigation.Favorites
 import kotlinx.coroutines.flow.collectLatest
+import java.util.concurrent.Executor
 
+@SuppressLint("ContextCastToActivity")
 @Composable
 fun CharacterListScreen(
     viewModel: CharacterListViewModel,
@@ -66,6 +76,8 @@ fun CharacterListScreen(
 
     val ui by viewModel.state.collectAsStateWithLifecycle()
     val snackBaHostState = remember { SnackbarHostState() }
+
+    val biometricAuth = BiometricAuthenticator(LocalContext.current)
 
     LaunchedEffect(Unit) { viewModel.refreshPage() }
 
@@ -91,7 +103,25 @@ fun CharacterListScreen(
             SnackbarHost(snackBaHostState)
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = { navController.navigate(Favorites) }) {
+            val activity = LocalContext.current as FragmentActivity
+            val title = LocalContext.current.getString(R.string.favorites)
+            val subtitle = LocalContext.current.getString(R.string.favoritesDisclaimer)
+            val cancel = LocalContext.current.getString(R.string.cancel)
+            FloatingActionButton(onClick = {
+                biometricAuth.promptBiometricAuth(
+                    title = title,
+                    subTitle = subtitle,
+                    negativeButtonText = cancel,
+                    fragmentActivity = activity,
+                    onSucces = {
+                        navController.navigate(Favorites)
+                    },
+                    onFailed = {
+                    },
+                    onError = { id, message ->
+                    }
+                )
+            }) {
                 Icon(
                     painter = painterResource(R.drawable.ic_favorite),
                     contentDescription = null
