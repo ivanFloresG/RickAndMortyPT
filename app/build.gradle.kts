@@ -62,6 +62,8 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.gms.play.services.maps)
+    implementation(libs.androidx.appcompat)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -95,5 +97,17 @@ dependencies {
 
     //Glide
     implementation(libs.glide)
+
+    //Room
+    implementation(libs.androidx.room.ktx)
+    kapt(libs.room.compiler)
+    implementation(libs.androidx.room.runtime)
+
+    //Maps
+    implementation(libs.maps.compose)
+    implementation(libs.gms.play.services.maps)
+
+    //Biometric
+    implementation(libs.androidx.biometric)
 }
 

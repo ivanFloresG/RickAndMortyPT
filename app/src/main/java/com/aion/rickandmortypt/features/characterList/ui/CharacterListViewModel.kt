@@ -3,7 +3,7 @@ package com.aion.rickandmortypt.features.characterList.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aion.rickandmortypt.core.network.Result
-import com.aion.rickandmortypt.features.characterList.domain.models.Character
+import com.aion.rickandmortypt.features.characterDetails.domain.models.Character
 import com.aion.rickandmortypt.features.characterList.domain.use_case.CharacterListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.BufferOverflow
@@ -60,30 +60,18 @@ class CharacterListViewModel @Inject constructor(
         _state.update { it.copy(selected = id) }
     }
 
-    fun onRefresh() {
-        _state.update {
-            it.copy(
-                page = 1,
-                isRefreshing = true,
-            )
-        }
-        fetchPage(page = 1, append = false)
-    }
-
     fun loadMore() {
         val s = _state.value
         if (s.isLoading || s.isRefreshing) return
 
         val pageToLoad = s.page + 1
-        println(pageToLoad)
-        println(s.totalPages)
         if (pageToLoad > s.totalPages) return
 
         _state.update { it.copy(isLoading = true) }
         fetchPage(page = pageToLoad, append = true)
     }
 
-    fun onClearFilters() {
+    fun refreshPage() {
         _state.update {
             it.copy(
                 filterName = "",

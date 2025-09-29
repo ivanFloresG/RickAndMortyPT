@@ -1,0 +1,16 @@
+package com.aion.rickandmortypt.core.data.database.entities
+
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "location")
+class LocationEntity(
+    @PrimaryKey(autoGenerate = false)
+    @ColumnInfo(name = "id") val id: Int,
+    @ColumnInfo(name = "name") val name: String,
+    @ColumnInfo(name = "type") val type: String,
+    @ColumnInfo(name = "dimension") val dimension: String,
+    @ColumnInfo(name = "url") val url: String,
+    @ColumnInfo(name = "created") val created: String
+)

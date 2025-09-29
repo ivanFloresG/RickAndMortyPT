@@ -9,5 +9,16 @@
     <string name="alive">Vivo</string>
     <string name="dead">Muerto</string>
     <string name="uknown">Desconocido</string>
+    <string name="details">Detalles</string>
+    <string name="locate">Ver en mapa</string>
+    <string name="episodes">Episodios en los que aparece:</string>
+    <string name="location">Last location</string>
+    <string name="lastLocation">Última ubicación</string>
+    <string name="seeLocation">Ver ubicación</string>
+    <string name="cantLoading">No se pudo cargar...</string>
+    <string name="loading">Cargando...</string>
+    <string name="favorites">Favoritos</string>
+    <string name="favoritesDisclaimer">Para ingresar a los favoritos por favor ingrese su huella digital</string>
+    <string name="cancel">Cancelar</string>
 
 </resources>

@@ -1,7 +1,6 @@
 package com.aion.rickandmortypt.features.characterList.ui
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.MutableTransitionState
+import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -29,6 +28,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -37,33 +37,44 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import com.aion.rickandmortypt.R
-import com.aion.rickandmortypt.core.CharacterCardItem
+import com.aion.rickandmortypt.core.auth.BiometricAuthenticator
+import com.aion.rickandmortypt.core.components.CharacterCardItem
+import com.aion.rickandmortypt.core.navigation.Details
+import com.aion.rickandmortypt.core.navigation.Favorites
 import kotlinx.coroutines.flow.collectLatest
 
+@SuppressLint("ContextCastToActivity")
 @Composable
-fun CharacterListScreen(viewModel: CharacterListViewModel) {
+fun CharacterListScreen(
+    viewModel: CharacterListViewModel,
+    navController: NavController
+) {
     val listState = rememberLazyListState()
 
     val ui by viewModel.state.collectAsStateWithLifecycle()
     val snackBaHostState = remember { SnackbarHostState() }
-    val scope = rememberCoroutineScope()
 
-    LaunchedEffect(Unit) { viewModel.onRefresh() }
+    val biometricAuth = BiometricAuthenticator(LocalContext.current)
+
+    LaunchedEffect(Unit) { viewModel.refreshPage() }
 
     LaunchedEffect(Unit) {
         viewModel.events.collectLatest { event ->
@@ -86,6 +97,33 @@ fun CharacterListScreen(viewModel: CharacterListViewModel) {
         snackbarHost = {
             SnackbarHost(snackBaHostState)
         },
+        floatingActionButton = {
+            val activity = LocalContext.current as FragmentActivity
+            val title = LocalContext.current.getString(R.string.favorites)
+            val subtitle = LocalContext.current.getString(R.string.favoritesDisclaimer)
+            val cancel = LocalContext.current.getString(R.string.cancel)
+            FloatingActionButton(onClick = {
+                biometricAuth.promptBiometricAuth(
+                    title = title,
+                    subTitle = subtitle,
+                    negativeButtonText = cancel,
+                    fragmentActivity = activity,
+                    onSucces = {
+                        navController.navigate(Favorites)
+                    },
+                    onFailed = {
+                    },
+                    onError = { id, message ->
+                    }
+                )
+            }) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_favorite_fill),
+                    contentDescription = null
+                )
+            }
+
+        }
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -106,40 +144,45 @@ fun CharacterListScreen(viewModel: CharacterListViewModel) {
                     Text(text = "Sin resultados...")
                 }
             } else {
-                LazyColumn(
-                    state = listState,
+                PullToRefreshBox(
+                    isRefreshing = ui.isRefreshing,
+                    onRefresh = { viewModel.refreshPage() },
                     modifier = Modifier.weight(0.9f),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    contentPadding = PaddingValues(horizontal = 10.dp),
                 ) {
-                    itemsIndexed(
-                        items = ui.items
-                    ) { index, character ->
-                        AnimatedVisibility(remember { MutableTransitionState(true) }) {
+                    LazyColumn(
+                        state = listState,
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        contentPadding = PaddingValues(horizontal = 10.dp),
+                    ) {
+                        itemsIndexed(
+                            items = ui.items
+                        ) { index, character ->
                             CharacterCardItem(character) { idCharacter ->
-                                viewModel.onItemClicked(idCharacter)
+                                navController.navigate(Details(idCharacter))
+                            }
+                            if (index == (ui.page * 20) - 1) {
+                                LaunchedEffect(Unit) {
+                                    viewModel.loadMore()
+                                }
                             }
                         }
-                        if (index == (ui.page * 20) - 1) {
-                            LaunchedEffect(Unit) {
-                                viewModel.loadMore()
-                            }
-                        }
-                    }
 
-                    if (ui.isRefreshing) {
-                        item {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                CircularProgressIndicator()
+                        if (ui.isLoading) {
+                            item {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(16.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    CircularProgressIndicator()
+                                }
                             }
                         }
                     }
                 }
+
             }
         }
     }
@@ -202,7 +245,7 @@ fun SearchFields(modifier: Modifier, ui: CharacterListUiState, viewModel: Charac
 
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                     Button(
-                        onClick = { viewModel.onClearFilters() },
+                        onClick = { viewModel.refreshPage() },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.Transparent,
                             contentColor = MaterialTheme.colorScheme.onBackground,

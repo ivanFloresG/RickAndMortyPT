@@ -1,6 +1,6 @@
 package com.aion.rickandmortypt.features.characterList.ui
 
-import com.aion.rickandmortypt.features.characterList.domain.models.Character
+import com.aion.rickandmortypt.features.characterDetails.domain.models.Character
 
 data class CharacterListUiState(
 
