@@ -1,10 +1,13 @@
 package com.aion.rickandmortypt.features.characterDetails.ui
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,6 +16,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -29,6 +34,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,6 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.aion.rickandmortypt.R
+import com.aion.rickandmortypt.core.components.EpisodeCardItem
 import com.aion.rickandmortypt.core.navigation.LocationMap
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
@@ -56,7 +63,9 @@ fun CharacterDetailScreen(
     val listState = rememberLazyListState()
     val ui by viewModel.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) { viewModel.fetchCharacter(id) }
+    LaunchedEffect(Unit) {
+        viewModel.fetchCharacter(id)
+    }
 
     DisposableEffect(Unit) {
         onDispose {
@@ -132,28 +141,51 @@ fun CharacterDetailScreen(
                     style = MaterialTheme.typography.headlineLarge,
                     fontWeight = FontWeight.Bold,
                 )
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(10.dp))
                 CharacterImage(ui.item.image, Modifier.size(180.dp), ui)
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(10.dp))
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
                     Label(ui.item.gender, R.drawable.ic_medical_info)
                     Label(ui.item.species, R.drawable.ic_genetic)
                     Label(ui.item.status, R.drawable.ic_favorite_fill)
                 }
                 Spacer(modifier = Modifier.height(20.dp))
-                Spacer(modifier = Modifier.height(20.dp))
                 Location(ui, navController)
                 Spacer(modifier = Modifier.height(10.dp))
-
-                /*
-                HorizontalDivider(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 30.dp)
+                Text(
+                    text = stringResource(R.string.episodes),
+                    color = MaterialTheme.colorScheme.primary,
                 )
+                LazyColumn(
+                    state = listState,
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    contentPadding = PaddingValues(horizontal = 10.dp),
+                ) {
+                    itemsIndexed(
+                        items = ui.episodes
+                    ) { index, episode ->
+                        AnimatedVisibility(remember { MutableTransitionState(true) }) {
+                            EpisodeCardItem(episode) { idCharacter ->
+                                viewModel.onChapterClicked(idCharacter)
+                            }
+                        }
 
-                 */
+                    }
 
+                    if (ui.isLoadingEpisodes) {
+                        item {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator()
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -243,7 +275,17 @@ fun Location(uiState: CharacterUiState, navController: NavController) {
         )
         val randomLocation = locations.randomOrNull()
 
-        Button(onClick = { navController.navigate(LocationMap(randomLocation!!.first, randomLocation!!.second, uiState.item.name)) }, modifier = Modifier.weight(3.5f)) {
+        Button(
+            onClick = {
+                navController.navigate(
+                    LocationMap(
+                        randomLocation!!.first, randomLocation!!.second,
+                        uiState.item.name
+                    )
+                )
+            },
+            modifier = Modifier.weight(3.5f)
+        ) {
             Icon(
                 painterResource(R.drawable.ic_location),
                 contentDescription = "",

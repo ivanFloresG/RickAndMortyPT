@@ -56,7 +56,6 @@ interface CharacterDao {
             } else {
                 insertCharacterOnly(newCharacter)
             }
-
         }
     }
 

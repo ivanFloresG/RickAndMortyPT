@@ -29,6 +29,7 @@ fun Character.toEntity() = CharacterEntity(
     gender = gender,
     location = location.name,
     origin = origin.name,
+    episode = episodes.joinToString(",") { it.substringAfterLast("/") },
     image = image,
     url = url,
     created = created,

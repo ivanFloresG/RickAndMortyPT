@@ -1,9 +1,6 @@
 package com.aion.rickandmortypt.features.characterList.ui
 
 import android.annotation.SuppressLint
-import android.widget.Toast
-import androidx.biometric.BiometricManager
-import androidx.biometric.BiometricPrompt
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -54,7 +51,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -64,7 +60,6 @@ import com.aion.rickandmortypt.core.components.CharacterCardItem
 import com.aion.rickandmortypt.core.navigation.Details
 import com.aion.rickandmortypt.core.navigation.Favorites
 import kotlinx.coroutines.flow.collectLatest
-import java.util.concurrent.Executor
 
 @SuppressLint("ContextCastToActivity")
 @Composable
@@ -123,7 +118,7 @@ fun CharacterListScreen(
                 )
             }) {
                 Icon(
-                    painter = painterResource(R.drawable.ic_favorite),
+                    painter = painterResource(R.drawable.ic_favorite_fill),
                     contentDescription = null
                 )
             }
@@ -163,11 +158,9 @@ fun CharacterListScreen(
                         itemsIndexed(
                             items = ui.items
                         ) { index, character ->
-                            //AnimatedVisibility(remember { MutableTransitionState(true) }) {
                             CharacterCardItem(character) { idCharacter ->
                                 navController.navigate(Details(idCharacter))
                             }
-                            // }
                             if (index == (ui.page * 20) - 1) {
                                 LaunchedEffect(Unit) {
                                     viewModel.loadMore()
