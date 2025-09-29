@@ -20,7 +20,7 @@ interface ApiClient {
     @GET("/api/character/{id}")
     suspend fun getCharacter(@Path("id") id: Int): Response<CharacterDTO>
 
-    @GET("/api/episode/{episodes}")
+    @GET("/api/episode/[{episodes}]")
     suspend fun getMultipleEpisodes(@Path("episodes") episodes: String): Response<List<EpisodeDTO>>
 
 
