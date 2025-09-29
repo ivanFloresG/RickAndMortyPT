@@ -1,5 +1,6 @@
 package com.aion.rickandmortypt.features.favoriteList.ui
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.foundation.background
@@ -34,16 +35,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.aion.rickandmortypt.R
-import com.aion.rickandmortypt.core.auth.BiometricGate
 import com.aion.rickandmortypt.core.components.CharacterCardItem
 
+@SuppressLint("ContextCastToActivity")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoriteListScreen(
     viewModel: FavoriteListViewModel,
     onBackPressed: () -> Unit
 ) {
-
     val listState = rememberLazyListState()
     val ui by viewModel.state.collectAsStateWithLifecycle()
 
@@ -81,77 +81,42 @@ fun FavoriteListScreen(
         }
     )
     { innerPadding ->
-        BiometricGate(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
-            LazyColumn(
-                state = listState,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                contentPadding = PaddingValues(horizontal = 10.dp),
-            ) {
-                itemsIndexed(
-                    items = ui.items
-                ) { index, character ->
-                    AnimatedVisibility(remember { MutableTransitionState(true) }) {
-                        CharacterCardItem(character) { idCharacter ->
-                            //navController.navigate(Details(idCharacter))
-                        }
-                    }
-
-                    if (index == (ui.page * 20) - 1) {
-                        LaunchedEffect(Unit) {
-                            viewModel.loadMore()
-                        }
+        LazyColumn(
+            state = listState,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            contentPadding = PaddingValues(horizontal = 10.dp),
+        ) {
+            itemsIndexed(
+                items = ui.items
+            ) { index, character ->
+                AnimatedVisibility(remember { MutableTransitionState(true) }) {
+                    CharacterCardItem(character) { idCharacter ->
+                        //navController.navigate(Details(idCharacter))
                     }
                 }
 
-                if (ui.isLoading) {
-                    item {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            CircularProgressIndicator()
-                        }
+                if (index == (ui.page * 20) - 1) {
+                    LaunchedEffect(Unit) {
+                        viewModel.loadMore()
+                    }
+                }
+            }
+
+            if (ui.isLoading) {
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
                     }
                 }
             }
         }
     }
 }
-/*
-private var canAuthenticate = false
-private lateinit var promptInfo: androidx.biometric.BiometricPrompt.PromptInfo
-
-private fun setupAuth(){
-    if (BiometricManager.from(LocalContext.current).canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG
-    or BiometricManager.Authenticators.DEVICE_CREDENTIAL) == BiometricManager.BIOMETRIC_SUCCESS)) {
-        canAuthenticate = true
-        promptInfo = androidx.biometric.BiometricPrompt.PromptInfo.Builder()
-            .setTitle("Biometric Auth")
-            .setSubtitle("Autenticate utilizando el sensor")
-            .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_STRONG
-                    or BiometricManager.Authenticators.DEVICE_CREDENTIAL)
-            .build()
-
-    }
-}
-
-private fun authenticate(auth: (auth: Boolean) -> Unit){
-    if(canAuthenticate){
-        BiometricPrompt(
-            this, ContextCompat.getMainExecutor(this),
-            object : BiometricPrompt.AuthenticationCallback() {
-                override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-                    super.onAuthenticationSucceeded(result)
-                    auth(true)
-                }
-            }).authenticate(promptInfo)
-    } else {
-        auth(false)
-    }
-}
- */

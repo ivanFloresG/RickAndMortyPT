@@ -17,5 +17,7 @@
     <string name="cantLoading">No se pudo cargar...</string>
     <string name="loading">Cargando...</string>
     <string name="favorites">Favoritos</string>
+    <string name="favoritesDisclaimer">Para ingresar a los favoritos por favor ingrese su huella digital</string>
+    <string name="cancel">Cancelar</string>
 
 </resources>

@@ -1,5 +1,6 @@
 package com.aion.rickandmortypt.features.characterList.ui
 
+import android.annotation.SuppressLint
 import android.widget.Toast
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
@@ -58,12 +59,14 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.aion.rickandmortypt.R
+import com.aion.rickandmortypt.core.auth.BiometricAuthenticator
 import com.aion.rickandmortypt.core.components.CharacterCardItem
 import com.aion.rickandmortypt.core.navigation.Details
 import com.aion.rickandmortypt.core.navigation.Favorites
 import kotlinx.coroutines.flow.collectLatest
 import java.util.concurrent.Executor
 
+@SuppressLint("ContextCastToActivity")
 @Composable
 fun CharacterListScreen(
     viewModel: CharacterListViewModel,
@@ -74,7 +77,7 @@ fun CharacterListScreen(
     val ui by viewModel.state.collectAsStateWithLifecycle()
     val snackBaHostState = remember { SnackbarHostState() }
 
-    val biometricManager = BiometricManager.from(LocalContext.current)
+    val biometricAuth = BiometricAuthenticator(LocalContext.current)
 
     LaunchedEffect(Unit) { viewModel.refreshPage() }
 
@@ -100,7 +103,25 @@ fun CharacterListScreen(
             SnackbarHost(snackBaHostState)
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = { navController.navigate(Favorites) }) {
+            val activity = LocalContext.current as FragmentActivity
+            val title = LocalContext.current.getString(R.string.favorites)
+            val subtitle = LocalContext.current.getString(R.string.favoritesDisclaimer)
+            val cancel = LocalContext.current.getString(R.string.cancel)
+            FloatingActionButton(onClick = {
+                biometricAuth.promptBiometricAuth(
+                    title = title,
+                    subTitle = subtitle,
+                    negativeButtonText = cancel,
+                    fragmentActivity = activity,
+                    onSucces = {
+                        navController.navigate(Favorites)
+                    },
+                    onFailed = {
+                    },
+                    onError = { id, message ->
+                    }
+                )
+            }) {
                 Icon(
                     painter = painterResource(R.drawable.ic_favorite),
                     contentDescription = null
@@ -381,44 +402,3 @@ fun FilterChip(viewModel: CharacterListViewModel, ui: CharacterListUiState) {
 
     }
 }
-
-/*
-@Composable
-fun FingerPrintAuth(canAuth: Boolean, onAuthSuccsess() -> Unit){
-    val contex = LocalContext.current
-    val activity = context as FragmentActivity
-
-    val executor: Executor = ContextCompat.getMainExecutor(context)
-
-    val biometricPrompt = remember {
-        BiometricPrompt(
-            activity, executor,
-            object : BiometricPrompt.AuthenticationCallback() {
-                override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-                    super.onAuthenticationSucceeded(result)
-                    Toast.makeText(contex, "FINGERPRINT MATCHED", Toast.LENGTH_SHORT).show()
-                }
-
-                override fun onAuthenticationFailed() {
-                    super.onAuthenticationFailed()
-                    Toast.makeText(contex, "FINGERPRINT failed", Toast.LENGTH_SHORT).show()
-                }
-
-                override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
-                    super.onAuthenticationError(errorCode, errString)
-                    Toast.makeText(contex, "FINGERPRINT error", Toast.LENGTH_SHORT).show()
-                }
-            })
-    }
-
-    val promptInfo = remember {
-        BiometricPrompt.PromptInfo.Builder()
-            .setTitle("Biometric Auth")
-            .setSubtitle("Use fingerprint to acces the screen")
-            .setNegativeButtonText("Cancel")
-            .build()
-
-        if (canAuth) biometricPrompt.authenticate(promptInfo)
-    }
-}
- */
