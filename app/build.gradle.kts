@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -13,12 +15,22 @@ android {
     val apiUrlTest = "https://rickandmortyapi.com"
     val apiUrlProd = "https://rickandmortyapi.com"
 
+    val localProperties = Properties()
+    val localPropertiesFile = rootProject.file("local.properties")
+    if(localPropertiesFile.exists()){
+        localPropertiesFile.inputStream().use { localProperties.load(it) }
+    }
+
+    val mapsApiKey = localProperties.getProperty("MAPS_API_KEY")
+
     defaultConfig {
         applicationId = "com.aion.rickandmortypt"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
         versionName = "1.2"
+
+        manifestPlaceholders["mapsApiKey"] = mapsApiKey
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
