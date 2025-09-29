@@ -10,7 +10,8 @@
     <string name="dead">Muerto</string>
     <string name="uknown">Desconocido</string>
     <string name="details">Detalles</string>
-    <string name="locate">Ubicar</string>
+    <string name="locate">Ver en mapa</string>
+    <string name="episodes">Episodios en los que aparece:</string>
     <string name="location">Last location</string>
     <string name="lastLocation">Última ubicación</string>
     <string name="seeLocation">Ver ubicación</string>

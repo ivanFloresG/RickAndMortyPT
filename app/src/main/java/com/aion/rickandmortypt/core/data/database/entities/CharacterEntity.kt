@@ -38,7 +38,7 @@ fun CharacterEntity.toCharacter() =
         episodes = episode
             .split(",")
             .filter { it.isNotBlank() }
-            .map { "chapter/$it" },
+            .map { "$it" },
         image = image,
         url = url,
         created = created,

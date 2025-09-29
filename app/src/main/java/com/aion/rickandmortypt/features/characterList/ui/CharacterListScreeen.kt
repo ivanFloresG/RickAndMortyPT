@@ -158,11 +158,9 @@ fun CharacterListScreen(
                         itemsIndexed(
                             items = ui.items
                         ) { index, character ->
-                            //AnimatedVisibility(remember { MutableTransitionState(true) }) {
                             CharacterCardItem(character) { idCharacter ->
                                 navController.navigate(Details(idCharacter))
                             }
-                            // }
                             if (index == (ui.page * 20) - 1) {
                                 LaunchedEffect(Unit) {
                                     viewModel.loadMore()

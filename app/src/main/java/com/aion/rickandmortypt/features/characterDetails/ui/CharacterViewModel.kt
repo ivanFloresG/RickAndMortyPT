@@ -61,6 +61,10 @@ class CharacterViewModel @Inject constructor(
                 isRefreshing = false,
             )
         }
+
+        viewModelScope.launch {
+            characterUseCase.updateEpisodeWatched(id, _state.value.episodes.first { it.id == id }.watched)
+        }
     }
 
     fun onFavoriteClicked(){
@@ -101,6 +105,8 @@ class CharacterViewModel @Inject constructor(
                                 isRefreshing = false,
                             )
                         }
+
+                        fetchEpisodes(_state.value.item.episodes)
                     }
 
                     is Result.Error -> {
@@ -121,6 +127,46 @@ class CharacterViewModel @Inject constructor(
                 }
             }.launchIn(this)
 
+        }
+    }
+
+    fun fetchEpisodes(ep: List<String>){
+        _state.update { prev ->
+            prev.copy(
+                isLoadingEpisodes = true,
+            )
+        }
+        viewModelScope.launch {
+            val eps = ep.joinToString(",")
+            characterUseCase.loadEpisodes(eps).onEach { result ->
+                when (result) {
+                    is Result.Succes -> {
+                        _state.update { prev ->
+                            prev.copy(
+                                episodes = result.data ?: emptyList(),
+                                isLoadingEpisodes = false,
+                                isRefreshing = false,
+                            )
+                        }
+                    }
+
+                    is Result.Error -> {
+                        _state.update { prev ->
+                            prev.copy(
+                                isLoadingEpisodes = false,
+                            )
+                        }
+                    }
+
+                    is Result.Loading -> {
+                        _state.update { prev ->
+                            prev.copy(
+                                isLoadingEpisodes = true,
+                            )
+                        }
+                    }
+                }
+            }.launchIn(this)
         }
     }
 

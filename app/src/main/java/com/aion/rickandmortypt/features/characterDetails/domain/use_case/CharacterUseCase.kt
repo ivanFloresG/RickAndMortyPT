@@ -3,8 +3,7 @@ package com.aion.rickandmortypt.features.characterDetails.domain.use_case
 import com.aion.rickandmortypt.core.network.Result
 import com.aion.rickandmortypt.features.characterDetails.data.CharacterRepositoryImp
 import com.aion.rickandmortypt.features.characterDetails.domain.models.Character
-import com.aion.rickandmortypt.features.characterList.data.CharacterListRepositoryImp
-import com.aion.rickandmortypt.features.characterList.domain.models.CharacterListInfo
+import com.aion.rickandmortypt.features.characterDetails.domain.models.Episode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
@@ -14,8 +13,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import okio.IOException
 import javax.inject.Inject
-import kotlin.collections.isNotEmpty
-import kotlin.collections.orEmpty
 
 class CharacterUseCase @Inject constructor(
     private val repository: CharacterRepositoryImp
@@ -45,7 +42,37 @@ class CharacterUseCase @Inject constructor(
         }
     }.flowOn(Dispatchers.IO) as Flow<Result<Character>>
 
+    suspend fun loadEpisodes(
+        episodes: String,
+    ): Flow<Result<List<Episode>>> = flow {
+        try {
+            val apiRes = repository.getEpisodesFromApi(episodes).first{it !is Result.Loading}
+            when (apiRes) {
+                is Result.Succes -> {
+                    val res = apiRes.data
+                    if(res != null){
+                        repository.saveEpisodesToDb(res)
+                    }
+                }
+                is Result.Error -> {
+                }
+                is Result.Loading -> {
+                }
+            }
+
+            emitAll(repository.getEpisodesFromDb(episodes)
+                .filterNot { it is Result.Loading })
+
+        } catch (e: IOException){
+        }
+    }.flowOn(Dispatchers.IO) as Flow<Result<List<Episode>>>
+
+
     suspend fun updateFavoriteStatus(id: Int, status: Boolean){
        repository.updateFavoriteStatus(id, status)
+    }
+
+    suspend fun updateEpisodeWatched(id: Int, watched: Boolean){
+        repository.updateEpisodeWatched(id, watched)
     }
 }

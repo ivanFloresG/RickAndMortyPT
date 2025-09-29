@@ -25,4 +25,5 @@ data class CharacterUiState(
 
     val isRefreshing: Boolean = false,
     val isLoading: Boolean = false,
+    val isLoadingEpisodes: Boolean = false,
 )

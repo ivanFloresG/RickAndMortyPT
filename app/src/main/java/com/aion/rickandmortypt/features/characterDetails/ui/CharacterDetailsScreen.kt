@@ -47,9 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.aion.rickandmortypt.R
-import com.aion.rickandmortypt.core.components.CharacterCardItem
 import com.aion.rickandmortypt.core.components.EpisodeCardItem
-import com.aion.rickandmortypt.core.navigation.Details
 import com.aion.rickandmortypt.core.navigation.LocationMap
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
@@ -65,7 +63,9 @@ fun CharacterDetailScreen(
     val listState = rememberLazyListState()
     val ui by viewModel.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) { viewModel.fetchCharacter(id) }
+    LaunchedEffect(Unit) {
+        viewModel.fetchCharacter(id)
+    }
 
     DisposableEffect(Unit) {
         onDispose {
@@ -141,28 +141,21 @@ fun CharacterDetailScreen(
                     style = MaterialTheme.typography.headlineLarge,
                     fontWeight = FontWeight.Bold,
                 )
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(10.dp))
                 CharacterImage(ui.item.image, Modifier.size(180.dp), ui)
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(10.dp))
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
                     Label(ui.item.gender, R.drawable.ic_medical_info)
                     Label(ui.item.species, R.drawable.ic_genetic)
                     Label(ui.item.status, R.drawable.ic_favorite_fill)
                 }
                 Spacer(modifier = Modifier.height(20.dp))
-                Spacer(modifier = Modifier.height(20.dp))
                 Location(ui, navController)
                 Spacer(modifier = Modifier.height(10.dp))
-
-                /*
-                HorizontalDivider(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 30.dp)
+                Text(
+                    text = stringResource(R.string.episodes),
+                    color = MaterialTheme.colorScheme.primary,
                 )
-
-                 */
-
                 LazyColumn(
                     state = listState,
                     modifier = Modifier.fillMaxSize(),
@@ -180,7 +173,7 @@ fun CharacterDetailScreen(
 
                     }
 
-                    if (ui.isLoading) {
+                    if (ui.isLoadingEpisodes) {
                         item {
                             Box(
                                 modifier = Modifier
@@ -282,7 +275,17 @@ fun Location(uiState: CharacterUiState, navController: NavController) {
         )
         val randomLocation = locations.randomOrNull()
 
-        Button(onClick = { navController.navigate(LocationMap(randomLocation!!.first, randomLocation!!.second, uiState.item.name)) }, modifier = Modifier.weight(3.5f)) {
+        Button(
+            onClick = {
+                navController.navigate(
+                    LocationMap(
+                        randomLocation!!.first, randomLocation!!.second,
+                        uiState.item.name
+                    )
+                )
+            },
+            modifier = Modifier.weight(3.5f)
+        ) {
             Icon(
                 painterResource(R.drawable.ic_location),
                 contentDescription = "",

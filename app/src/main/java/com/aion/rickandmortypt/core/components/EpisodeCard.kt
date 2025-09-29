@@ -7,17 +7,23 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.aion.rickandmortypt.R
 import com.aion.rickandmortypt.features.characterDetails.domain.models.Episode
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -32,24 +38,37 @@ fun EpisodeCardItem(
             .fillMaxWidth(),
         colors = CardDefaults.cardColors(
             containerColor = if (episode.watched) {
-                MaterialTheme.colorScheme.secondary
+                MaterialTheme.colorScheme.surfaceContainerHighest
             } else {
                 MaterialTheme.colorScheme.surfaceContainerLow
             }
         ),
         shape = RoundedCornerShape(corner = CornerSize(20.dp)),
-        border = BorderStroke(1.dp, color = MaterialTheme.colorScheme.surfaceContainerHighest)
+        border = BorderStroke(
+            2.dp,
+            color = if (episode.watched) {
+                MaterialTheme.colorScheme.primary
+            } else {
+                MaterialTheme.colorScheme.surfaceContainerHighest
+            }
+
+        )
     ) {
-        Row(modifier = Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
+        Row(modifier = Modifier
+            .fillMaxSize()
+            .padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
             Text(
                 text = episode.id.toString(),
-                modifier = Modifier.weight(1f),
-                fontWeight = FontWeight.Bold
+                modifier = Modifier
+                    .weight(1.5f)
+                    .fillMaxWidth(),
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
             )
             Column(
                 modifier = Modifier
                     .fillMaxHeight()
-                    .weight(6f)
+                    .weight(7f)
             ) {
                 Text(
                     text = episode.episode,
@@ -66,7 +85,15 @@ fun EpisodeCardItem(
                 )
             }
             if (episode.watched) {
-                Text(text = "Visto")
+                Column(modifier = Modifier.weight(1.5f).fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+                    Icon(
+                        painterResource(R.drawable.ic_check),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                    Text(text = "Visto", fontSize = 10.sp)
+
+                }
             }
         }
     }
