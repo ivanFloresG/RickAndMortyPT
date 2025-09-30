@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -26,10 +27,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -73,116 +71,121 @@ fun CharacterDetailScreen(
         }
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = "",
-                        fontWeight = FontWeight.Bold
-                    )
-                },
-                navigationIcon = {
-                    IconButton(
-                        onClick = {
-                            navController.popBackStack()
-                        },
-                        modifier = Modifier
-                            .size(50.dp)
-                    ) {
-                        Icon(
-                            painterResource(R.drawable.ic_back),
-                            contentDescription = "",
-                            tint = MaterialTheme.colorScheme.onBackground
-                        )
-                    }
-                },
-                actions = {
-                    IconButton(
-                        onClick = { viewModel.onFavoriteClicked() },
-                        modifier = Modifier
-                            .size(50.dp)
-                            .background(
-                                color = MaterialTheme.colorScheme.surfaceContainerLow,
-                                shape = RoundedCornerShape(50.dp)
-                            ),
-                        enabled = !ui.isLoading
-                    ) {
-                        Icon(
-                            painter = if (ui.item.favorite) {
-                                painterResource(R.drawable.ic_favorite_fill)
-                            } else {
-                                painterResource(R.drawable.ic_favorite)
-                            },
-                            contentDescription = "",
-                            modifier = Modifier.size(25.dp),
-                            tint = Color.Red
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors().copy(containerColor = MaterialTheme.colorScheme.background)
-            )
-        },
-        bottomBar = {}
-    ) { innerPadding ->
-        if (ui.isLoading) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
-            }
-        } else {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding),
-                horizontalAlignment = Alignment.CenterHorizontally
+    if (ui.isLoading) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
+        }
+    } else {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .systemBarsPadding()
+                .background(MaterialTheme.colorScheme.background),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            LazyColumn(
+                state = listState,
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                contentPadding = PaddingValues(horizontal = 10.dp),
             ) {
-                Text(
-                    text = ui.item.name,
-                    style = MaterialTheme.typography.headlineLarge,
-                    fontWeight = FontWeight.Bold,
-                )
-                Spacer(modifier = Modifier.height(10.dp))
-                CharacterImage(ui.item.image, Modifier.size(180.dp), ui)
-                Spacer(modifier = Modifier.height(10.dp))
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
-                    Label(ui.item.gender, R.drawable.ic_medical_info)
-                    Label(ui.item.species, R.drawable.ic_genetic)
-                    Label(ui.item.status, R.drawable.ic_favorite_fill)
-                }
-                Spacer(modifier = Modifier.height(20.dp))
-                Location(ui, navController)
-                Spacer(modifier = Modifier.height(10.dp))
-                Text(
-                    text = stringResource(R.string.episodes),
-                    color = MaterialTheme.colorScheme.primary,
-                )
-                LazyColumn(
-                    state = listState,
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    contentPadding = PaddingValues(horizontal = 10.dp),
-                ) {
-                    itemsIndexed(
-                        items = ui.episodes
-                    ) { index, episode ->
-                        AnimatedVisibility(remember { MutableTransitionState(true) }) {
-                            EpisodeCardItem(episode) { idCharacter ->
-                                viewModel.onChapterClicked(idCharacter)
-                            }
+                stickyHeader {
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(MaterialTheme.colorScheme.background)
+                            .padding(vertical =10.dp),
+                        verticalAlignment = Alignment.CenterVertically
+
+                    ) {
+                        IconButton(
+                            onClick = { navController.popBackStack() },
+                            modifier = Modifier
+                                .size(50.dp)
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_back),
+                                contentDescription = "",
+                                modifier = Modifier.size(25.dp),
+                                tint = MaterialTheme.colorScheme.onBackground
+                            )
                         }
 
+                        Text(
+                            text = ui.item.name,
+                            style = MaterialTheme.typography.headlineMedium,
+                            color = MaterialTheme.colorScheme.onBackground,
+                            fontWeight = FontWeight.Bold,
+                        )
+
+                        IconButton(
+                            onClick = { viewModel.onFavoriteClicked() },
+                            modifier = Modifier
+                                .size(50.dp)
+                                .background(
+                                    color = MaterialTheme.colorScheme.surfaceContainerLow,
+                                    shape = RoundedCornerShape(50.dp)
+                                ),
+                            enabled = !ui.isLoading
+                        ) {
+                            Icon(
+                                painter = if (ui.item.favorite) {
+                                    painterResource(R.drawable.ic_favorite_fill)
+                                } else {
+                                    painterResource(R.drawable.ic_favorite)
+                                },
+                                contentDescription = "",
+                                modifier = Modifier.size(25.dp),
+                                tint = Color.Red
+                            )
+                        }
+                    }
+                }
+
+                item {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        CharacterImage(ui.item.image, Modifier.size(180.dp), ui)
+                        Spacer(modifier = Modifier.height(10.dp))
+                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
+                            Label(ui.item.gender, R.drawable.ic_medical_info)
+                            Label(ui.item.species, R.drawable.ic_genetic)
+                            Label(ui.item.status, R.drawable.ic_favorite_fill)
+                        }
+                        Spacer(modifier = Modifier.height(20.dp))
+                        Location(ui, navController)
+                        Spacer(modifier = Modifier.height(10.dp))
+                        Text(
+                            text = stringResource(R.string.episodes),
+                            color = MaterialTheme.colorScheme.primary,
+                        )
+                    }
+                }
+
+                itemsIndexed(
+                    items = ui.episodes
+                ) { index, episode ->
+                    AnimatedVisibility(remember { MutableTransitionState(true) }) {
+                        EpisodeCardItem(episode) { idCharacter ->
+                            viewModel.onChapterClicked(idCharacter)
+                        }
                     }
 
-                    if (ui.isLoadingEpisodes) {
-                        item {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                CircularProgressIndicator()
-                            }
+                }
+
+                if (ui.isLoadingEpisodes) {
+                    item {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
                         }
                     }
                 }
@@ -211,6 +214,7 @@ fun Label(
         Text(
             text = text,
             style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onBackground,
         )
     }
 }
@@ -245,19 +249,20 @@ fun Location(uiState: CharacterUiState, navController: NavController) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 10.dp), verticalAlignment = Alignment.CenterVertically
+            , verticalAlignment = Alignment.CenterVertically
     ) {
-        Column(modifier = Modifier.weight(6.5f)) {
+        Column(modifier = Modifier.weight(6.4f)) {
             Text(
                 text = stringResource(R.string.locate),
-                style = MaterialTheme.typography.bodyLarge,
+                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.secondary
             )
             Spacer(modifier = Modifier.height(10.dp))
             Text(
                 text = uiState.item.location.name,
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground
             )
         }
 
@@ -284,7 +289,7 @@ fun Location(uiState: CharacterUiState, navController: NavController) {
                     )
                 )
             },
-            modifier = Modifier.weight(3.5f)
+            modifier = Modifier.weight(3.6f)
         ) {
             Icon(
                 painterResource(R.drawable.ic_location),
@@ -295,6 +300,22 @@ fun Location(uiState: CharacterUiState, navController: NavController) {
                 tint = MaterialTheme.colorScheme.onPrimary
             )
             Text(stringResource(R.string.locate))
+        }
+    }
+}
+
+@Composable
+fun NestedScroll() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .systemBarsPadding()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+
+        LazyColumn {
+
         }
     }
 }
