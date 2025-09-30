@@ -108,7 +108,7 @@ fun CharacterDetailScreen(
                                 painter = painterResource(R.drawable.ic_back),
                                 contentDescription = "",
                                 modifier = Modifier.size(25.dp),
-                                tint = Color.White
+                                tint = MaterialTheme.colorScheme.onBackground
                             )
                         }
 

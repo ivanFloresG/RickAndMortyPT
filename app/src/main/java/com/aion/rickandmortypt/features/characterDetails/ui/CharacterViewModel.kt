@@ -41,6 +41,7 @@ class CharacterViewModel @Inject constructor(
                     "",
                     favorite = false
                 ),
+                episodes = emptyList(),
                 isLoading = false,
                 isRefreshing = false,
             )
